@@ -1,8 +1,8 @@
-import urllib.request
 import json
 import csv
 import os
 import re
+import subprocess
 import argparse
 from datetime import datetime
 
@@ -61,38 +61,35 @@ NET_RATE = (1 - FED_TAX - MI_TAX) * CASH_OPTION  # ~0.3525
 
 # --- Core Logic ---
 
-HEADERS = {
-    "Content-Type": "application/json",
-    "Origin": "https://www.michiganlottery.com",
-    "Referer": "https://www.michiganlottery.com/",
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
-}
-
+CURL_CMD = [
+    "curl", "-s", "--max-time", "30", "-X", "POST",
+    "-H", "Content-Type: application/json",
+    "-H", "Origin: https://www.michiganlottery.com",
+    "-H", "Referer: https://www.michiganlottery.com/",
+    "-H", "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+]
 
 def _gql_fetch(start_date, end_date):
-    query = f"""
-    {{
-      winningNumbersForDateRange(dateRange: {{ start: "{start_date}", end: "{end_date}" }}) {{
-        id
-        drawDate
-        gameTypeId
-        winningNumbers {{
-          drawNumbers
-          millionaireball
-          megaball
-          powerball
-          powerplay
-        }}
-        jackpot {{
-            jackpotAmount
-        }}
-      }}
-    }}
-    """
-    payload = json.dumps({"query": query}).encode("utf-8")
-    req = urllib.request.Request(GQL_URL, data=payload, headers=HEADERS, method="POST")
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    def _run(include_jackpot):
+        jackpot_fragment = " jackpot { jackpotAmount }" if include_jackpot else ""
+        query = (
+            f'{{ winningNumbersForDateRange(dateRange: {{ start: "{start_date}", end: "{end_date}" }}) {{'
+            f' id drawDate gameTypeId drawNumber'
+            f' winningNumbers {{ drawNumbers millionaireball megaball powerball powerplay }}'
+            f'{jackpot_fragment}'
+            f' }} }}'
+        )
+        result = subprocess.run(
+            CURL_CMD + ["--data", json.dumps({"query": query}), GQL_URL],
+            capture_output=True, text=True, check=True,
+        )
+        return json.loads(result.stdout)
+
+    data = _run(include_jackpot=True)
+    if "errors" in data:
+        print("  jackpot field unavailable, fetching without.")
+        data = _run(include_jackpot=False)
+    return data
 
 
 CHUNK_DAYS = 90
