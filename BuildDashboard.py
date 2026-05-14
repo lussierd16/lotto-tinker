@@ -260,6 +260,23 @@ def build_stats(game_config, records):
     }
 
 
+_LEGACY_BONUS_FIELD = {
+    "powerball": "powerball",
+    "mega-millions": "megaball",
+    "millionaire-for-life": "millionaireball",
+}
+
+def _normalize(records, game_config):
+    """Rename legacy game-specific bonus keys to 'bonus' for consistency."""
+    src = _LEGACY_BONUS_FIELD.get(game_config['key'])
+    if not src:
+        return records
+    for r in records:
+        if src in r and 'bonus' not in r:
+            r['bonus'] = r.pop(src)
+    return records
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--fetch", action="store_true", help="Pull fresh data from the MI Lottery API")
@@ -279,7 +296,7 @@ def main():
             existing = []
             if os.path.exists(json_path):
                 with open(json_path, "r") as f:
-                    existing = json.load(f)
+                    existing = _normalize(json.load(f), game)
             records = fetch_data(game, existing_records=existing)
             with open(json_path, "w") as f:
                 json.dump(records, f, indent=2)
@@ -299,7 +316,7 @@ def main():
         else:
             if os.path.exists(json_path):
                 with open(json_path, "r") as f:
-                    records = json.load(f)
+                    records = _normalize(json.load(f), game)
 
         stats = build_stats(game, records)
         if stats:
