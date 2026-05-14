@@ -61,17 +61,21 @@ NET_RATE = (1 - FED_TAX - MI_TAX) * CASH_OPTION  # ~0.3525
 
 # --- Core Logic ---
 
-def fetch_data(game_config, start_date="2025-01-01", end_date=None):
-    if not end_date:
-        end_date = datetime.now().strftime("%Y-%m-%d")
+HEADERS = {
+    "Content-Type": "application/json",
+    "Origin": "https://www.michiganlottery.com",
+    "Referer": "https://www.michiganlottery.com/",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+}
 
+
+def _gql_fetch(start_date, end_date):
     query = f"""
     {{
       winningNumbersForDateRange(dateRange: {{ start: "{start_date}", end: "{end_date}" }}) {{
         id
         drawDate
         gameTypeId
-        drawNumber
         winningNumbers {{
           drawNumbers
           millionaireball
@@ -85,19 +89,30 @@ def fetch_data(game_config, start_date="2025-01-01", end_date=None):
       }}
     }}
     """
-
     payload = json.dumps({"query": query}).encode("utf-8")
-    req = urllib.request.Request(
-        GQL_URL,
-        data=payload,
-        headers={"Content-Type": "application/json", "Origin": "https://www.michiganlottery.com"},
-        method="POST"
-    )
+    req = urllib.request.Request(GQL_URL, data=payload, headers=HEADERS, method="POST")
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+def fetch_data(game_config, existing_records=None, end_date=None):
+    if not end_date:
+        end_date = datetime.now().strftime("%Y-%m-%d")
+
+    # Incremental: only fetch draws newer than what we already have
+    if existing_records:
+        from datetime import date, timedelta
+        last = existing_records[-1]['date']
+        start_date = (date.fromisoformat(last) + timedelta(days=1)).isoformat()
+    else:
+        start_date = "2025-01-01"
+
+    if start_date > end_date:
+        print(f"{game_config['display']}: already up to date.")
+        return existing_records or []
 
     print(f"Fetching {game_config['display']} ({start_date} -> {end_date})...")
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        res = json.loads(resp.read().decode("utf-8"))
-
+    res = _gql_fetch(start_date, end_date)
     all_draws = res["data"]["winningNumbersForDateRange"]
     filtered = [d for d in all_draws if d["gameTypeId"] == game_config["gameTypeId"]]
 
@@ -105,19 +120,19 @@ def fetch_data(game_config, start_date="2025-01-01", end_date=None):
     seen_dates = {}
     deduped = []
     for d in sorted(filtered, key=lambda x: x['id']):
-        date = d['drawDate'][:10]
-        if date not in seen_dates:
-            seen_dates[date] = True
+        date_str = d['drawDate'][:10]
+        if date_str not in seen_dates:
+            seen_dates[date_str] = True
             deduped.append(d)
 
-    records = []
+    bonus_field = "millionaireball" if game_config['key'] == "millionaire-for-life" else \
+                  "megaball" if game_config['key'] == "mega-millions" else \
+                  "powerball" if game_config['key'] == "powerball" else None
+
+    new_records = []
     for d in deduped:
         wn = d["winningNumbers"]
-        bonus_field = "millionaireball" if game_config['key'] == "millionaire-for-life" else \
-                      "megaball" if game_config['key'] == "mega-millions" else \
-                      "powerball" if game_config['key'] == "powerball" else None
-
-        records.append({
+        new_records.append({
             "date": d["drawDate"][:10],
             "numbers": sorted(wn["drawNumbers"]),
             "bonus": wn.get(bonus_field) if bonus_field else None,
@@ -125,7 +140,8 @@ def fetch_data(game_config, start_date="2025-01-01", end_date=None):
             "powerplay": wn.get("powerplay")
         })
 
-    return sorted(records, key=lambda x: x['date'])
+    combined = (existing_records or []) + new_records
+    return sorted(combined, key=lambda x: x['date'])
 
 
 def build_stats(game_config, records):
@@ -250,7 +266,11 @@ def main():
         csv_path = os.path.join(args.output_dir, f"lottery-{game['key']}.csv")
 
         if args.fetch:
-            records = fetch_data(game)
+            existing = []
+            if os.path.exists(json_path):
+                with open(json_path, "r") as f:
+                    existing = json.load(f)
+            records = fetch_data(game, existing_records=existing)
             with open(json_path, "w") as f:
                 json.dump(records, f, indent=2)
             # Write CSV
