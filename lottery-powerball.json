@@ -1,0 +1,2771 @@
+[
+  {
+    "date": "2025-01-01",
+    "numbers": [
+      6,
+      12,
+      28,
+      35,
+      66
+    ],
+    "jackpot_usd": 178000000,
+    "powerball": 26,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-01-04",
+    "numbers": [
+      26,
+      32,
+      43,
+      54,
+      56
+    ],
+    "jackpot_usd": 200000000,
+    "powerball": 24,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-01-06",
+    "numbers": [
+      17,
+      34,
+      46,
+      66,
+      67
+    ],
+    "jackpot_usd": 220000000,
+    "powerball": 14,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-01-08",
+    "numbers": [
+      1,
+      20,
+      36,
+      38,
+      43
+    ],
+    "jackpot_usd": 240000000,
+    "powerball": 24,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-01-11",
+    "numbers": [
+      3,
+      6,
+      32,
+      37,
+      65
+    ],
+    "jackpot_usd": 263000000,
+    "powerball": 4,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-01-13",
+    "numbers": [
+      4,
+      6,
+      16,
+      39,
+      66
+    ],
+    "jackpot_usd": 285000000,
+    "powerball": 9,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-01-15",
+    "numbers": [
+      8,
+      41,
+      52,
+      53,
+      58
+    ],
+    "jackpot_usd": 303000000,
+    "powerball": 7,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-01-18",
+    "numbers": [
+      14,
+      31,
+      35,
+      64,
+      69
+    ],
+    "jackpot_usd": 331000000,
+    "powerball": 23,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-01-20",
+    "numbers": [
+      15,
+      16,
+      32,
+      47,
+      54
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 6,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-01-22",
+    "numbers": [
+      5,
+      6,
+      27,
+      40,
+      49
+    ],
+    "jackpot_usd": 31000000,
+    "powerball": 5,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-01-25",
+    "numbers": [
+      8,
+      15,
+      17,
+      53,
+      66
+    ],
+    "jackpot_usd": 46000000,
+    "powerball": 14,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-01-27",
+    "numbers": [
+      2,
+      40,
+      47,
+      53,
+      55
+    ],
+    "jackpot_usd": 56000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-01-29",
+    "numbers": [
+      8,
+      12,
+      31,
+      33,
+      38
+    ],
+    "jackpot_usd": 69000000,
+    "powerball": 18,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-02-01",
+    "numbers": [
+      23,
+      29,
+      32,
+      49,
+      61
+    ],
+    "jackpot_usd": 89000000,
+    "powerball": 8,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-02-03",
+    "numbers": [
+      12,
+      37,
+      47,
+      54,
+      60
+    ],
+    "jackpot_usd": 100000000,
+    "powerball": 17,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-02-05",
+    "numbers": [
+      19,
+      27,
+      30,
+      50,
+      62
+    ],
+    "jackpot_usd": 113000000,
+    "powerball": 14,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-02-08",
+    "numbers": [
+      23,
+      44,
+      57,
+      60,
+      62
+    ],
+    "jackpot_usd": 133000000,
+    "powerball": 9,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-02-10",
+    "numbers": [
+      2,
+      17,
+      18,
+      29,
+      43
+    ],
+    "jackpot_usd": 142000000,
+    "powerball": 3,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-02-12",
+    "numbers": [
+      21,
+      32,
+      36,
+      45,
+      49
+    ],
+    "jackpot_usd": 154000000,
+    "powerball": 18,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-02-15",
+    "numbers": [
+      3,
+      16,
+      45,
+      54,
+      56
+    ],
+    "jackpot_usd": 172000000,
+    "powerball": 12,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-02-17",
+    "numbers": [
+      4,
+      44,
+      47,
+      52,
+      57
+    ],
+    "jackpot_usd": 183000000,
+    "powerball": 9,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-02-19",
+    "numbers": [
+      6,
+      21,
+      28,
+      49,
+      60
+    ],
+    "jackpot_usd": 195000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-02-22",
+    "numbers": [
+      7,
+      18,
+      22,
+      50,
+      65
+    ],
+    "jackpot_usd": 215000000,
+    "powerball": 15,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-02-24",
+    "numbers": [
+      10,
+      11,
+      34,
+      59,
+      68
+    ],
+    "jackpot_usd": 230000000,
+    "powerball": 14,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-02-26",
+    "numbers": [
+      28,
+      48,
+      55,
+      60,
+      62
+    ],
+    "jackpot_usd": 248000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-03-01",
+    "numbers": [
+      2,
+      23,
+      36,
+      44,
+      49
+    ],
+    "jackpot_usd": 272000000,
+    "powerball": 25,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-03-03",
+    "numbers": [
+      18,
+      20,
+      50,
+      52,
+      56
+    ],
+    "jackpot_usd": 279000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-03-05",
+    "numbers": [
+      24,
+      28,
+      40,
+      63,
+      65
+    ],
+    "jackpot_usd": 295000000,
+    "powerball": 20,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-03-08",
+    "numbers": [
+      2,
+      4,
+      16,
+      23,
+      63
+    ],
+    "jackpot_usd": 320000000,
+    "powerball": 13,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-03-10",
+    "numbers": [
+      17,
+      40,
+      47,
+      50,
+      55
+    ],
+    "jackpot_usd": 335000000,
+    "powerball": 6,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-03-12",
+    "numbers": [
+      11,
+      13,
+      28,
+      51,
+      58
+    ],
+    "jackpot_usd": 353000000,
+    "powerball": 1,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-03-15",
+    "numbers": [
+      12,
+      28,
+      33,
+      36,
+      54
+    ],
+    "jackpot_usd": 378000000,
+    "powerball": 5,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-03-17",
+    "numbers": [
+      11,
+      18,
+      23,
+      38,
+      60
+    ],
+    "jackpot_usd": 398000000,
+    "powerball": 9,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-03-19",
+    "numbers": [
+      8,
+      11,
+      21,
+      49,
+      59
+    ],
+    "jackpot_usd": 416000000,
+    "powerball": 15,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-03-22",
+    "numbers": [
+      6,
+      7,
+      25,
+      46,
+      57
+    ],
+    "jackpot_usd": 444000000,
+    "powerball": 12,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-03-24",
+    "numbers": [
+      6,
+      23,
+      35,
+      36,
+      47
+    ],
+    "jackpot_usd": 461000000,
+    "powerball": 12,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-03-26",
+    "numbers": [
+      5,
+      20,
+      29,
+      39,
+      53
+    ],
+    "jackpot_usd": 484000000,
+    "powerball": 6,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-03-29",
+    "numbers": [
+      7,
+      11,
+      21,
+      53,
+      61
+    ],
+    "jackpot_usd": 515000000,
+    "powerball": 2,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-03-31",
+    "numbers": [
+      12,
+      41,
+      44,
+      52,
+      64
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 25,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-04-02",
+    "numbers": [
+      5,
+      17,
+      41,
+      64,
+      69
+    ],
+    "jackpot_usd": 30000000,
+    "powerball": 1,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-04-05",
+    "numbers": [
+      4,
+      23,
+      30,
+      46,
+      62
+    ],
+    "jackpot_usd": 47000000,
+    "powerball": 2,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-04-07",
+    "numbers": [
+      20,
+      23,
+      48,
+      59,
+      66
+    ],
+    "jackpot_usd": 54000000,
+    "powerball": 4,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-04-09",
+    "numbers": [
+      4,
+      29,
+      37,
+      55,
+      67
+    ],
+    "jackpot_usd": 65000000,
+    "powerball": 10,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-04-12",
+    "numbers": [
+      16,
+      22,
+      44,
+      45,
+      53
+    ],
+    "jackpot_usd": 82000000,
+    "powerball": 19,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-04-14",
+    "numbers": [
+      3,
+      20,
+      30,
+      52,
+      62
+    ],
+    "jackpot_usd": 100000000,
+    "powerball": 1,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-04-16",
+    "numbers": [
+      20,
+      24,
+      42,
+      43,
+      49
+    ],
+    "jackpot_usd": 113000000,
+    "powerball": 19,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-04-19",
+    "numbers": [
+      7,
+      25,
+      37,
+      39,
+      63
+    ],
+    "jackpot_usd": 131000000,
+    "powerball": 1,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-04-21",
+    "numbers": [
+      4,
+      33,
+      45,
+      46,
+      51
+    ],
+    "jackpot_usd": 139000000,
+    "powerball": 25,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-04-23",
+    "numbers": [
+      15,
+      44,
+      63,
+      66,
+      69
+    ],
+    "jackpot_usd": 151000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-04-26",
+    "numbers": [
+      1,
+      12,
+      14,
+      18,
+      69
+    ],
+    "jackpot_usd": 168000000,
+    "powerball": 2,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-04-28",
+    "numbers": [
+      26,
+      43,
+      51,
+      56,
+      60
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 24,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-04-30",
+    "numbers": [
+      1,
+      2,
+      3,
+      57,
+      59
+    ],
+    "jackpot_usd": 30000000,
+    "powerball": 9,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-03",
+    "numbers": [
+      10,
+      21,
+      23,
+      35,
+      65
+    ],
+    "jackpot_usd": 44000000,
+    "powerball": 24,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-05",
+    "numbers": [
+      16,
+      34,
+      40,
+      45,
+      66
+    ],
+    "jackpot_usd": 54000000,
+    "powerball": 19,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-07",
+    "numbers": [
+      14,
+      15,
+      30,
+      40,
+      59
+    ],
+    "jackpot_usd": 65000000,
+    "powerball": 20,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-05-10",
+    "numbers": [
+      5,
+      20,
+      28,
+      39,
+      42
+    ],
+    "jackpot_usd": 82000000,
+    "powerball": 13,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-12",
+    "numbers": [
+      15,
+      16,
+      41,
+      48,
+      60
+    ],
+    "jackpot_usd": 93000000,
+    "powerball": 21,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-05-14",
+    "numbers": [
+      4,
+      10,
+      24,
+      29,
+      53
+    ],
+    "jackpot_usd": 106000000,
+    "powerball": 4,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-05-17",
+    "numbers": [
+      7,
+      34,
+      40,
+      42,
+      52
+    ],
+    "jackpot_usd": 123000000,
+    "powerball": 15,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-19",
+    "numbers": [
+      13,
+      14,
+      37,
+      50,
+      60
+    ],
+    "jackpot_usd": 134000000,
+    "powerball": 11,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-21",
+    "numbers": [
+      9,
+      29,
+      31,
+      34,
+      43
+    ],
+    "jackpot_usd": 146000000,
+    "powerball": 2,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-24",
+    "numbers": [
+      12,
+      18,
+      28,
+      48,
+      52
+    ],
+    "jackpot_usd": 163000000,
+    "powerball": 5,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-05-26",
+    "numbers": [
+      13,
+      47,
+      52,
+      64,
+      67
+    ],
+    "jackpot_usd": 177000000,
+    "powerball": 25,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-28",
+    "numbers": [
+      23,
+      27,
+      32,
+      35,
+      59
+    ],
+    "jackpot_usd": 189000000,
+    "powerball": 11,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-05-31",
+    "numbers": [
+      1,
+      29,
+      37,
+      56,
+      68
+    ],
+    "jackpot_usd": 207000000,
+    "powerball": 13,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-06-02",
+    "numbers": [
+      1,
+      7,
+      44,
+      57,
+      61
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 21,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-06-04",
+    "numbers": [
+      5,
+      17,
+      23,
+      35,
+      45
+    ],
+    "jackpot_usd": 30000000,
+    "powerball": 24,
+    "powerplay": 10
+  },
+  {
+    "date": "2025-06-07",
+    "numbers": [
+      31,
+      36,
+      43,
+      48,
+      62
+    ],
+    "jackpot_usd": 44000000,
+    "powerball": 25,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-06-09",
+    "numbers": [
+      30,
+      33,
+      40,
+      43,
+      52
+    ],
+    "jackpot_usd": 54000000,
+    "powerball": 25,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-06-11",
+    "numbers": [
+      13,
+      25,
+      29,
+      37,
+      53
+    ],
+    "jackpot_usd": 65000000,
+    "powerball": 3,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-06-14",
+    "numbers": [
+      4,
+      6,
+      9,
+      23,
+      59
+    ],
+    "jackpot_usd": 80000000,
+    "powerball": 25,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-06-16",
+    "numbers": [
+      17,
+      21,
+      23,
+      27,
+      52
+    ],
+    "jackpot_usd": 90000000,
+    "powerball": 19,
+    "powerplay": 5
+  },
+  {
+    "date": "2025-06-18",
+    "numbers": [
+      23,
+      29,
+      50,
+      64,
+      67
+    ],
+    "jackpot_usd": 101000000,
+    "powerball": 11,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-06-21",
+    "numbers": [
+      3,
+      16,
+      32,
+      52,
+      62
+    ],
+    "jackpot_usd": 118000000,
+    "powerball": 24,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-06-23",
+    "numbers": [
+      5,
+      25,
+      42,
+      44,
+      65
+    ],
+    "jackpot_usd": 128000000,
+    "powerball": 20,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-06-25",
+    "numbers": [
+      2,
+      12,
+      37,
+      51,
+      61
+    ],
+    "jackpot_usd": 140000000,
+    "powerball": 22,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-06-28",
+    "numbers": [
+      4,
+      35,
+      43,
+      52,
+      62
+    ],
+    "jackpot_usd": 155000000,
+    "powerball": 12,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-06-30",
+    "numbers": [
+      13,
+      28,
+      44,
+      52,
+      55
+    ],
+    "jackpot_usd": 162000000,
+    "powerball": 6,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-07-02",
+    "numbers": [
+      7,
+      19,
+      21,
+      54,
+      63
+    ],
+    "jackpot_usd": 174000000,
+    "powerball": 21,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-07-05",
+    "numbers": [
+      1,
+      28,
+      34,
+      50,
+      58
+    ],
+    "jackpot_usd": 190000000,
+    "powerball": 8,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-07-07",
+    "numbers": [
+      33,
+      35,
+      58,
+      61,
+      69
+    ],
+    "jackpot_usd": 203000000,
+    "powerball": 25,
+    "powerplay": 5
+  },
+  {
+    "date": "2025-07-09",
+    "numbers": [
+      5,
+      9,
+      25,
+      28,
+      69
+    ],
+    "jackpot_usd": 216000000,
+    "powerball": 5,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-07-12",
+    "numbers": [
+      8,
+      16,
+      24,
+      33,
+      54
+    ],
+    "jackpot_usd": 234000000,
+    "powerball": 18,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-07-14",
+    "numbers": [
+      8,
+      12,
+      45,
+      46,
+      63
+    ],
+    "jackpot_usd": 248000000,
+    "powerball": 24,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-07-16",
+    "numbers": [
+      4,
+      21,
+      43,
+      48,
+      49
+    ],
+    "jackpot_usd": 264000000,
+    "powerball": 22,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-07-19",
+    "numbers": [
+      28,
+      48,
+      51,
+      61,
+      69
+    ],
+    "jackpot_usd": 288000000,
+    "powerball": 20,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-07-21",
+    "numbers": [
+      8,
+      11,
+      28,
+      33,
+      42
+    ],
+    "jackpot_usd": 308000000,
+    "powerball": 2,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-07-23",
+    "numbers": [
+      2,
+      18,
+      19,
+      25,
+      35
+    ],
+    "jackpot_usd": 325000000,
+    "powerball": 25,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-07-26",
+    "numbers": [
+      8,
+      31,
+      57,
+      65,
+      67
+    ],
+    "jackpot_usd": 350000000,
+    "powerball": 23,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-07-28",
+    "numbers": [
+      7,
+      35,
+      36,
+      43,
+      62
+    ],
+    "jackpot_usd": 364000000,
+    "powerball": 3,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-07-30",
+    "numbers": [
+      4,
+      15,
+      35,
+      50,
+      64
+    ],
+    "jackpot_usd": 384000000,
+    "powerball": 8,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-08-02",
+    "numbers": [
+      6,
+      18,
+      34,
+      35,
+      36
+    ],
+    "jackpot_usd": 410000000,
+    "powerball": 2,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-08-04",
+    "numbers": [
+      8,
+      9,
+      19,
+      31,
+      38
+    ],
+    "jackpot_usd": 426000000,
+    "powerball": 21,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-08-06",
+    "numbers": [
+      15,
+      27,
+      43,
+      45,
+      53
+    ],
+    "jackpot_usd": 449000000,
+    "powerball": 9,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-08-09",
+    "numbers": [
+      7,
+      14,
+      23,
+      24,
+      60
+    ],
+    "jackpot_usd": 482000000,
+    "powerball": 14,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-08-11",
+    "numbers": [
+      6,
+      16,
+      33,
+      40,
+      62
+    ],
+    "jackpot_usd": 501000000,
+    "powerball": 2,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-08-13",
+    "numbers": [
+      4,
+      11,
+      40,
+      44,
+      50
+    ],
+    "jackpot_usd": 526000000,
+    "powerball": 4,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-08-16",
+    "numbers": [
+      23,
+      40,
+      49,
+      65,
+      69
+    ],
+    "jackpot_usd": 565000000,
+    "powerball": 23,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-08-18",
+    "numbers": [
+      15,
+      46,
+      61,
+      63,
+      64
+    ],
+    "jackpot_usd": 605000000,
+    "powerball": 1,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-08-20",
+    "numbers": [
+      31,
+      59,
+      62,
+      65,
+      68
+    ],
+    "jackpot_usd": 643000000,
+    "powerball": 5,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-08-23",
+    "numbers": [
+      11,
+      14,
+      34,
+      47,
+      51
+    ],
+    "jackpot_usd": 700000000,
+    "powerball": 18,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-08-25",
+    "numbers": [
+      16,
+      19,
+      34,
+      37,
+      64
+    ],
+    "jackpot_usd": 750000000,
+    "powerball": 22,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-08-27",
+    "numbers": [
+      9,
+      12,
+      22,
+      41,
+      61
+    ],
+    "jackpot_usd": 850000000,
+    "powerball": 25,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-08-30",
+    "numbers": [
+      3,
+      18,
+      22,
+      27,
+      33
+    ],
+    "jackpot_usd": 1000000000,
+    "powerball": 17,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-09-01",
+    "numbers": [
+      8,
+      23,
+      25,
+      40,
+      53
+    ],
+    "jackpot_usd": 1100000000,
+    "powerball": 5,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-09-03",
+    "numbers": [
+      3,
+      16,
+      29,
+      61,
+      69
+    ],
+    "jackpot_usd": 1400000000,
+    "powerball": 22,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-09-06",
+    "numbers": [
+      11,
+      23,
+      44,
+      61,
+      62
+    ],
+    "jackpot_usd": 1800000000,
+    "powerball": 17,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-09-08",
+    "numbers": [
+      26,
+      28,
+      41,
+      53,
+      64
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 9,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-09-10",
+    "numbers": [
+      2,
+      24,
+      45,
+      53,
+      64
+    ],
+    "jackpot_usd": 33000000,
+    "powerball": 5,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-09-13",
+    "numbers": [
+      28,
+      37,
+      42,
+      50,
+      53
+    ],
+    "jackpot_usd": 50000000,
+    "powerball": 19,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-09-15",
+    "numbers": [
+      14,
+      15,
+      32,
+      42,
+      49
+    ],
+    "jackpot_usd": 64000000,
+    "powerball": 1,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-09-17",
+    "numbers": [
+      7,
+      30,
+      50,
+      54,
+      62
+    ],
+    "jackpot_usd": 81000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-09-20",
+    "numbers": [
+      15,
+      29,
+      64,
+      66,
+      67
+    ],
+    "jackpot_usd": 99000000,
+    "powerball": 4,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-09-22",
+    "numbers": [
+      3,
+      29,
+      42,
+      46,
+      59
+    ],
+    "jackpot_usd": 113000000,
+    "powerball": 15,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-09-24",
+    "numbers": [
+      15,
+      31,
+      45,
+      49,
+      53
+    ],
+    "jackpot_usd": 127000000,
+    "powerball": 19,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-09-27",
+    "numbers": [
+      10,
+      16,
+      32,
+      61,
+      66
+    ],
+    "jackpot_usd": 145000000,
+    "powerball": 4,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-09-29",
+    "numbers": [
+      1,
+      3,
+      27,
+      60,
+      65
+    ],
+    "jackpot_usd": 160000000,
+    "powerball": 16,
+    "powerplay": 5
+  },
+  {
+    "date": "2025-10-01",
+    "numbers": [
+      8,
+      17,
+      22,
+      28,
+      55
+    ],
+    "jackpot_usd": 174000000,
+    "powerball": 14,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-10-04",
+    "numbers": [
+      3,
+      7,
+      47,
+      67,
+      68
+    ],
+    "jackpot_usd": 195000000,
+    "powerball": 2,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-06",
+    "numbers": [
+      28,
+      29,
+      32,
+      66,
+      67
+    ],
+    "jackpot_usd": 207000000,
+    "powerball": 3,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-08",
+    "numbers": [
+      8,
+      10,
+      44,
+      48,
+      54
+    ],
+    "jackpot_usd": 223000000,
+    "powerball": 14,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-11",
+    "numbers": [
+      13,
+      16,
+      18,
+      20,
+      27
+    ],
+    "jackpot_usd": 244000000,
+    "powerball": 10,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-13",
+    "numbers": [
+      13,
+      14,
+      32,
+      52,
+      64
+    ],
+    "jackpot_usd": 258000000,
+    "powerball": 12,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-15",
+    "numbers": [
+      10,
+      13,
+      28,
+      34,
+      47
+    ],
+    "jackpot_usd": 273000000,
+    "powerball": 15,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-10-18",
+    "numbers": [
+      3,
+      11,
+      27,
+      40,
+      58
+    ],
+    "jackpot_usd": 295000000,
+    "powerball": 10,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-10-20",
+    "numbers": [
+      32,
+      38,
+      66,
+      67,
+      69
+    ],
+    "jackpot_usd": 304000000,
+    "powerball": 19,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-22",
+    "numbers": [
+      18,
+      37,
+      52,
+      54,
+      60
+    ],
+    "jackpot_usd": 320000000,
+    "powerball": 12,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-25",
+    "numbers": [
+      2,
+      12,
+      22,
+      39,
+      67
+    ],
+    "jackpot_usd": 344000000,
+    "powerball": 15,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-27",
+    "numbers": [
+      17,
+      39,
+      43,
+      51,
+      66
+    ],
+    "jackpot_usd": 358000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-10-29",
+    "numbers": [
+      4,
+      24,
+      49,
+      60,
+      65
+    ],
+    "jackpot_usd": 376000000,
+    "powerball": 1,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-01",
+    "numbers": [
+      2,
+      26,
+      43,
+      44,
+      62
+    ],
+    "jackpot_usd": 400000000,
+    "powerball": 22,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-03",
+    "numbers": [
+      3,
+      32,
+      40,
+      43,
+      57
+    ],
+    "jackpot_usd": 419000000,
+    "powerball": 18,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-05",
+    "numbers": [
+      9,
+      17,
+      29,
+      61,
+      66
+    ],
+    "jackpot_usd": 438000000,
+    "powerball": 26,
+    "powerplay": 5
+  },
+  {
+    "date": "2025-11-08",
+    "numbers": [
+      3,
+      53,
+      60,
+      62,
+      68
+    ],
+    "jackpot_usd": 467000000,
+    "powerball": 11,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-10",
+    "numbers": [
+      6,
+      28,
+      44,
+      48,
+      58
+    ],
+    "jackpot_usd": 490000000,
+    "powerball": 23,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-12",
+    "numbers": [
+      29,
+      39,
+      43,
+      51,
+      65
+    ],
+    "jackpot_usd": 512000000,
+    "powerball": 23,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-15",
+    "numbers": [
+      6,
+      7,
+      12,
+      47,
+      53
+    ],
+    "jackpot_usd": 546000000,
+    "powerball": 21,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-11-17",
+    "numbers": [
+      7,
+      33,
+      50,
+      57,
+      66
+    ],
+    "jackpot_usd": 570000000,
+    "powerball": 23,
+    "powerplay": 5
+  },
+  {
+    "date": "2025-11-19",
+    "numbers": [
+      10,
+      31,
+      49,
+      51,
+      68
+    ],
+    "jackpot_usd": 593000000,
+    "powerball": 19,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-22",
+    "numbers": [
+      28,
+      32,
+      36,
+      51,
+      69
+    ],
+    "jackpot_usd": 629000000,
+    "powerball": 2,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-24",
+    "numbers": [
+      8,
+      16,
+      26,
+      30,
+      58
+    ],
+    "jackpot_usd": 654000000,
+    "powerball": 14,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-11-26",
+    "numbers": [
+      7,
+      8,
+      15,
+      19,
+      28
+    ],
+    "jackpot_usd": 681000000,
+    "powerball": 3,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-11-29",
+    "numbers": [
+      19,
+      22,
+      30,
+      32,
+      59
+    ],
+    "jackpot_usd": 719000000,
+    "powerball": 1,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-12-01",
+    "numbers": [
+      5,
+      18,
+      26,
+      47,
+      59
+    ],
+    "jackpot_usd": 740000000,
+    "powerball": 1,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-12-03",
+    "numbers": [
+      1,
+      14,
+      20,
+      46,
+      51
+    ],
+    "jackpot_usd": 775000000,
+    "powerball": 26,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-12-06",
+    "numbers": [
+      13,
+      14,
+      26,
+      28,
+      44
+    ],
+    "jackpot_usd": 820000000,
+    "powerball": 7,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-12-08",
+    "numbers": [
+      8,
+      32,
+      52,
+      56,
+      64
+    ],
+    "jackpot_usd": 875000000,
+    "powerball": 23,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-12-10",
+    "numbers": [
+      10,
+      16,
+      29,
+      33,
+      69
+    ],
+    "jackpot_usd": 930000000,
+    "powerball": 22,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-12-13",
+    "numbers": [
+      1,
+      28,
+      31,
+      57,
+      58
+    ],
+    "jackpot_usd": 1000000000,
+    "powerball": 16,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-12-15",
+    "numbers": [
+      23,
+      35,
+      59,
+      63,
+      68
+    ],
+    "jackpot_usd": 1100000000,
+    "powerball": 2,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-12-17",
+    "numbers": [
+      25,
+      33,
+      53,
+      62,
+      66
+    ],
+    "jackpot_usd": 1250000000,
+    "powerball": 17,
+    "powerplay": 4
+  },
+  {
+    "date": "2025-12-20",
+    "numbers": [
+      4,
+      5,
+      28,
+      52,
+      69
+    ],
+    "jackpot_usd": 1500000000,
+    "powerball": 20,
+    "powerplay": 3
+  },
+  {
+    "date": "2025-12-22",
+    "numbers": [
+      3,
+      18,
+      36,
+      41,
+      54
+    ],
+    "jackpot_usd": 1600000000,
+    "powerball": 7,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-12-24",
+    "numbers": [
+      4,
+      25,
+      31,
+      52,
+      59
+    ],
+    "jackpot_usd": 1700000000,
+    "powerball": 19,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-12-27",
+    "numbers": [
+      5,
+      20,
+      34,
+      39,
+      62
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 1,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-12-29",
+    "numbers": [
+      11,
+      19,
+      34,
+      48,
+      53
+    ],
+    "jackpot_usd": 33000000,
+    "powerball": 21,
+    "powerplay": 2
+  },
+  {
+    "date": "2025-12-31",
+    "numbers": [
+      11,
+      18,
+      21,
+      24,
+      38
+    ],
+    "jackpot_usd": 45000000,
+    "powerball": 26,
+    "powerplay": 10
+  },
+  {
+    "date": "2026-01-03",
+    "numbers": [
+      18,
+      21,
+      40,
+      53,
+      60
+    ],
+    "jackpot_usd": 64000000,
+    "powerball": 23,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-01-05",
+    "numbers": [
+      4,
+      18,
+      24,
+      51,
+      56
+    ],
+    "jackpot_usd": 86000000,
+    "powerball": 14,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-01-07",
+    "numbers": [
+      15,
+      28,
+      57,
+      58,
+      63
+    ],
+    "jackpot_usd": 105000000,
+    "powerball": 23,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-01-10",
+    "numbers": [
+      5,
+      19,
+      21,
+      28,
+      64
+    ],
+    "jackpot_usd": 124000000,
+    "powerball": 14,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-01-12",
+    "numbers": [
+      5,
+      27,
+      45,
+      56,
+      59
+    ],
+    "jackpot_usd": 137000000,
+    "powerball": 4,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-01-14",
+    "numbers": [
+      6,
+      24,
+      39,
+      43,
+      51
+    ],
+    "jackpot_usd": 156000000,
+    "powerball": 2,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-01-17",
+    "numbers": [
+      5,
+      8,
+      27,
+      49,
+      57
+    ],
+    "jackpot_usd": 179000000,
+    "powerball": 14,
+    "powerplay": 4
+  },
+  {
+    "date": "2026-01-19",
+    "numbers": [
+      5,
+      28,
+      34,
+      37,
+      55
+    ],
+    "jackpot_usd": 193000000,
+    "powerball": 17,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-01-21",
+    "numbers": [
+      11,
+      26,
+      27,
+      53,
+      55
+    ],
+    "jackpot_usd": 209000000,
+    "powerball": 12,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-01-24",
+    "numbers": [
+      2,
+      16,
+      35,
+      61,
+      63
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 5,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-01-26",
+    "numbers": [
+      21,
+      31,
+      51,
+      60,
+      63
+    ],
+    "jackpot_usd": 30000000,
+    "powerball": 18,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-01-28",
+    "numbers": [
+      21,
+      35,
+      40,
+      46,
+      68
+    ],
+    "jackpot_usd": 43000000,
+    "powerball": 11,
+    "powerplay": 10
+  },
+  {
+    "date": "2026-01-31",
+    "numbers": [
+      2,
+      8,
+      14,
+      40,
+      63
+    ],
+    "jackpot_usd": 57000000,
+    "powerball": 23,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-02-02",
+    "numbers": [
+      3,
+      8,
+      31,
+      60,
+      65
+    ],
+    "jackpot_usd": 65000000,
+    "powerball": 4,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-02-04",
+    "numbers": [
+      27,
+      29,
+      30,
+      37,
+      58
+    ],
+    "jackpot_usd": 80000000,
+    "powerball": 15,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-02-07",
+    "numbers": [
+      25,
+      36,
+      42,
+      51,
+      58
+    ],
+    "jackpot_usd": 102000000,
+    "powerball": 6,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-02-09",
+    "numbers": [
+      6,
+      19,
+      22,
+      28,
+      48
+    ],
+    "jackpot_usd": 113000000,
+    "powerball": 24,
+    "powerplay": 5
+  },
+  {
+    "date": "2026-02-11",
+    "numbers": [
+      6,
+      20,
+      33,
+      40,
+      48
+    ],
+    "jackpot_usd": 126000000,
+    "powerball": 5,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-02-14",
+    "numbers": [
+      23,
+      43,
+      58,
+      60,
+      64
+    ],
+    "jackpot_usd": 146000000,
+    "powerball": 24,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-02-16",
+    "numbers": [
+      16,
+      18,
+      19,
+      56,
+      58
+    ],
+    "jackpot_usd": 154000000,
+    "powerball": 6,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-02-18",
+    "numbers": [
+      9,
+      33,
+      52,
+      64,
+      66
+    ],
+    "jackpot_usd": 169000000,
+    "powerball": 1,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-02-21",
+    "numbers": [
+      27,
+      28,
+      36,
+      48,
+      49
+    ],
+    "jackpot_usd": 190000000,
+    "powerball": 21,
+    "powerplay": 4
+  },
+  {
+    "date": "2026-02-23",
+    "numbers": [
+      5,
+      11,
+      23,
+      29,
+      47
+    ],
+    "jackpot_usd": 203000000,
+    "powerball": 6,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-02-25",
+    "numbers": [
+      50,
+      52,
+      54,
+      56,
+      64
+    ],
+    "jackpot_usd": 218000000,
+    "powerball": 23,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-02-28",
+    "numbers": [
+      6,
+      20,
+      35,
+      54,
+      65
+    ],
+    "jackpot_usd": 238000000,
+    "powerball": 10,
+    "powerplay": 4
+  },
+  {
+    "date": "2026-03-02",
+    "numbers": [
+      2,
+      17,
+      18,
+      38,
+      62
+    ],
+    "jackpot_usd": 249000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-03-04",
+    "numbers": [
+      7,
+      14,
+      42,
+      47,
+      56
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 6,
+    "powerplay": 4
+  },
+  {
+    "date": "2026-03-07",
+    "numbers": [
+      17,
+      18,
+      30,
+      50,
+      68
+    ],
+    "jackpot_usd": 35000000,
+    "powerball": 24,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-03-09",
+    "numbers": [
+      22,
+      23,
+      28,
+      36,
+      54
+    ],
+    "jackpot_usd": 46000000,
+    "powerball": 13,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-03-11",
+    "numbers": [
+      3,
+      6,
+      55,
+      58,
+      63
+    ],
+    "jackpot_usd": 58000000,
+    "powerball": 12,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-03-14",
+    "numbers": [
+      9,
+      30,
+      42,
+      50,
+      52
+    ],
+    "jackpot_usd": 75000000,
+    "powerball": 21,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-03-16",
+    "numbers": [
+      7,
+      10,
+      20,
+      47,
+      52
+    ],
+    "jackpot_usd": 88000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-03-18",
+    "numbers": [
+      14,
+      18,
+      19,
+      21,
+      69
+    ],
+    "jackpot_usd": 101000000,
+    "powerball": 1,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-03-21",
+    "numbers": [
+      12,
+      28,
+      36,
+      41,
+      59
+    ],
+    "jackpot_usd": 120000000,
+    "powerball": 2,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-03-23",
+    "numbers": [
+      12,
+      18,
+      47,
+      56,
+      63
+    ],
+    "jackpot_usd": 133000000,
+    "powerball": 1,
+    "powerplay": 10
+  },
+  {
+    "date": "2026-03-25",
+    "numbers": [
+      7,
+      21,
+      55,
+      56,
+      64
+    ],
+    "jackpot_usd": 147000000,
+    "powerball": 26,
+    "powerplay": 4
+  },
+  {
+    "date": "2026-03-28",
+    "numbers": [
+      11,
+      42,
+      43,
+      59,
+      61
+    ],
+    "jackpot_usd": 166000000,
+    "powerball": 25,
+    "powerplay": 4
+  },
+  {
+    "date": "2026-03-30",
+    "numbers": [
+      7,
+      11,
+      31,
+      41,
+      57
+    ],
+    "jackpot_usd": 180000000,
+    "powerball": 20,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-04-01",
+    "numbers": [
+      4,
+      10,
+      11,
+      52,
+      64
+    ],
+    "jackpot_usd": 194000000,
+    "powerball": 24,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-04-04",
+    "numbers": [
+      3,
+      6,
+      13,
+      41,
+      65
+    ],
+    "jackpot_usd": 217000000,
+    "powerball": 1,
+    "powerplay": 4
+  },
+  {
+    "date": "2026-04-06",
+    "numbers": [
+      7,
+      24,
+      37,
+      42,
+      57
+    ],
+    "jackpot_usd": 231000000,
+    "powerball": 5,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-04-08",
+    "numbers": [
+      3,
+      16,
+      17,
+      42,
+      52
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 3,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-04-11",
+    "numbers": [
+      6,
+      47,
+      49,
+      53,
+      60
+    ],
+    "jackpot_usd": 35000000,
+    "powerball": 6,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-04-13",
+    "numbers": [
+      38,
+      43,
+      59,
+      63,
+      64
+    ],
+    "jackpot_usd": 45000000,
+    "powerball": 15,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-04-15",
+    "numbers": [
+      13,
+      21,
+      27,
+      43,
+      45
+    ],
+    "jackpot_usd": 58000000,
+    "powerball": 26,
+    "powerplay": 5
+  },
+  {
+    "date": "2026-04-18",
+    "numbers": [
+      24,
+      25,
+      39,
+      46,
+      61
+    ],
+    "jackpot_usd": 75000000,
+    "powerball": 1,
+    "powerplay": 5
+  },
+  {
+    "date": "2026-04-20",
+    "numbers": [
+      9,
+      17,
+      36,
+      47,
+      64
+    ],
+    "jackpot_usd": 87000000,
+    "powerball": 26,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-04-22",
+    "numbers": [
+      24,
+      29,
+      32,
+      49,
+      63
+    ],
+    "jackpot_usd": 100000000,
+    "powerball": 11,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-04-25",
+    "numbers": [
+      4,
+      30,
+      36,
+      52,
+      57
+    ],
+    "jackpot_usd": 118000000,
+    "powerball": 2,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-04-27",
+    "numbers": [
+      18,
+      31,
+      33,
+      36,
+      62
+    ],
+    "jackpot_usd": 130000000,
+    "powerball": 3,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-04-29",
+    "numbers": [
+      3,
+      19,
+      35,
+      51,
+      67
+    ],
+    "jackpot_usd": 143000000,
+    "powerball": 15,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-05-02",
+    "numbers": [
+      25,
+      37,
+      42,
+      52,
+      65
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 14,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-05-04",
+    "numbers": [
+      30,
+      36,
+      42,
+      60,
+      63
+    ],
+    "jackpot_usd": 20000000,
+    "powerball": 13,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-05-06",
+    "numbers": [
+      18,
+      27,
+      51,
+      65,
+      68
+    ],
+    "jackpot_usd": 30000000,
+    "powerball": 5,
+    "powerplay": 3
+  },
+  {
+    "date": "2026-05-09",
+    "numbers": [
+      15,
+      41,
+      46,
+      47,
+      56
+    ],
+    "jackpot_usd": 47000000,
+    "powerball": 22,
+    "powerplay": 2
+  },
+  {
+    "date": "2026-05-11",
+    "numbers": [
+      24,
+      30,
+      37,
+      56,
+      64
+    ],
+    "jackpot_usd": 57000000,
+    "powerball": 7,
+    "powerplay": 3
+  }
+]

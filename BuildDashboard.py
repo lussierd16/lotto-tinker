@@ -95,15 +95,19 @@ def _gql_fetch(start_date, end_date):
         return json.loads(resp.read().decode("utf-8"))
 
 
+CHUNK_DAYS = 90
+
+
 def fetch_data(game_config, existing_records=None, end_date=None):
+    from datetime import date as date_type, timedelta
+
     if not end_date:
         end_date = datetime.now().strftime("%Y-%m-%d")
 
     # Incremental: only fetch draws newer than what we already have
     if existing_records:
-        from datetime import date, timedelta
         last = existing_records[-1]['date']
-        start_date = (date.fromisoformat(last) + timedelta(days=1)).isoformat()
+        start_date = (date_type.fromisoformat(last) + timedelta(days=1)).isoformat()
     else:
         start_date = "2025-01-01"
 
@@ -111,10 +115,19 @@ def fetch_data(game_config, existing_records=None, end_date=None):
         print(f"{game_config['display']}: already up to date.")
         return existing_records or []
 
-    print(f"Fetching {game_config['display']} ({start_date} -> {end_date})...")
-    res = _gql_fetch(start_date, end_date)
-    all_draws = res["data"]["winningNumbersForDateRange"]
-    filtered = [d for d in all_draws if d["gameTypeId"] == game_config["gameTypeId"]]
+    # Chunk large ranges so the API response never gets too big
+    all_raw = []
+    chunk_start = date_type.fromisoformat(start_date)
+    end_dt = date_type.fromisoformat(end_date)
+    while chunk_start <= end_dt:
+        chunk_end = min(chunk_start + timedelta(days=CHUNK_DAYS - 1), end_dt)
+        cs, ce = chunk_start.isoformat(), chunk_end.isoformat()
+        print(f"Fetching {game_config['display']} ({cs} -> {ce})...")
+        res = _gql_fetch(cs, ce)
+        all_raw.extend(res["data"]["winningNumbersForDateRange"])
+        chunk_start = chunk_end + timedelta(days=1)
+
+    filtered = [d for d in all_raw if d["gameTypeId"] == game_config["gameTypeId"]]
 
     # Deduplicate for Powerball/Lotto47 (Double Play/Kicker returns 2 records per draw)
     seen_dates = {}
