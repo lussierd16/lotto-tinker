@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Michigan Lottery Stats Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: #0f1419; color: #e8e8e8;
+  font-size: 14px; line-height: 1.5;
+}
+h1 { margin: 0 0 4px 0; font-size: 28px; letter-spacing: -0.5px; }
+h2 { margin: 0 0 8px 0; font-size: 22px; color: #dbaf56; }
+h3 { margin: 24px 0 8px 0; font-size: 15px; color: #6d8ead; text-transform: uppercase; letter-spacing: 1px; }
+.subtitle { color: #8a93a0; margin-bottom: 32px; font-size: 13px; }
+.game-section {
+  background: #1a2028; border-radius: 12px; padding: 24px;
+  margin-bottom: 24px; border: 1px solid #2a3441;
+}
+.summary-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px; margin-bottom: 24px;
+}
+.stat-card {
+  background: #232b35; padding: 14px 16px; border-radius: 8px;
+  border-left: 3px solid #dbaf56;
+}
+.stat-card .label {
+  font-size: 11px; text-transform: uppercase; color: #8a93a0;
+  letter-spacing: 0.6px; margin-bottom: 4px;
+}
+.stat-card .value { font-size: 20px; font-weight: 600; color: #fff; }
+.stat-card .secondary { font-size: 12px; color: #8a93a0; margin-top: 2px; }
+.charts-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+@media (max-width: 900px) {
+  .charts-grid { grid-template-columns: 1fr; }
+}
+.chart-wrap {
+  background: #232b35; padding: 16px; border-radius: 8px; height: 280px;
+}
+.chart-wrap.tall { height: 360px; }
+.balls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ball {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #fff; color: #1a2028; font-weight: 700; font-size: 14px;
+}
+.ball.bonus { background: #dbaf56; color: #1a2028; }
+.ball.recommend { background: #4ea386; color: #fff; }
+.label-inline { font-size: 11px; text-transform: uppercase; color: #8a93a0; margin-right: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 6px 10px; text-align: left; border-bottom: 1px solid #2a3441; }
+th { color: #8a93a0; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.6px; }
+.gap-table td:first-child { font-weight: 700; color: #dbaf56; }
+.ev-positive { color: #4ea386; font-weight: 700; }
+.ev-negative { color: #d64550; }
+
+/* Generator Styles */
+.generator-wrap {
+  background: #232b35; padding: 20px; border-radius: 8px; margin-top: 16px;
+  border: 1px dashed #4a5568;
+}
+.gen-grid {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 16px;
+}
+.gen-field { display: flex; flex-direction: column; gap: 4px; }
+.gen-field label { font-size: 10px; text-transform: uppercase; color: #8a93a0; }
+.gen-field input[type="number"], .gen-field input[type="text"] {
+  background: #1a2028; border: 1px solid #2a3441; color: #fff;
+  padding: 8px; border-radius: 4px; width: 50px; text-align: center;
+  font-weight: 700; outline: none;
+}
+/* Hide spin buttons */
+.gen-field input::-webkit-outer-spin-button,
+.gen-field input::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+.gen-field input[type=number] { -moz-appearance: textfield; }
+
+.gen-field input.manual { color: #dbaf56; border-color: #dbaf56; }
+.gen-field input.generated { color: #4ea386; border-color: #4ea386; }
+.gen-field input.wide { width: 80px; }
+.gen-check { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #e8e8e8; cursor: pointer; }
+.gen-btn {
+  background: #dbaf56; color: #0f1419; border: none; padding: 10px 20px;
+  border-radius: 6px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+}
+.gen-btn:hover { opacity: 0.9; }
+.gen-error { color: #d64550; font-size: 11px; margin-top: 8px; }
+
+.note {
+  background: #232b35; padding: 12px 16px; border-radius: 8px;
+  font-size: 12px; color: #8a93a0; border-left: 3px solid #6d8ead;
+  margin-top: 12px;
+}
+.disclaimer {
+  background: #1a2028; padding: 24px; border-radius: 12px;
+  border: 1px solid #d64550; margin-top: 24px;
+  font-size: 13px; line-height: 1.6;
+}
+.disclaimer h2 { color: #d64550; }
+.unavailable { color: #8a93a0; font-style: italic; padding: 12px; }
+.timestamp { font-size: 11px; color: #8a93a0; }
+</style>
+</head>
+<body>
+
+<h1>Michigan Lottery — Stats Dashboard</h1>
+<div class="subtitle">Generated 2026-05-13 20:20 · Based on 577 historical draws across 4 games</div>
+
+<div id="game-sections"></div>
+
+<div class="game-section">
+  <h2>Jackpot Trend — Major Games</h2>
+  <div class="chart-wrap tall"><canvas id="jackpot-major"></canvas></div>
+  <div class="note">Red dots mark draws where a jackpot was won (next draw reset to ~$20M). The sawtooth pattern is the natural rise-and-reset cycle — jackpots climb each draw until someone wins.</div>
+</div>
+
+<div class="game-section">
+  <h2>Jackpot Trend — Classic Lotto 47</h2>
+  <div class="chart-wrap tall"><canvas id="jackpot-classic"></canvas></div>
+  <div class="note">Plotted on a separate scale because Classic Lotto jackpots ($1M–$30M) are dwarfed by Mega Millions / Powerball ($20M–$1.8B).</div>
+</div>
+
+<div class="disclaimer">
+  <h2>Reality Check</h2>
+  <p><strong>Lottery draws are independent random events.</strong> Past results carry zero predictive information about future draws. "Hot numbers", "due numbers", and frequency-based picking are gambler's fallacy — every combination has identical odds.</p>
+  <p><strong>The unpopular-number strategy does NOT improve win odds.</strong> Picking numbers like 32+ (above calendar dates) doesn't increase your chance of winning. It only reduces the chance of <em>splitting</em> the jackpot if you happen to win, because fewer people pick those numbers. Same probability of winning, higher expected payout when you do.</p>
+  <p><strong>Expected-Value analysis is the only mathematically sound input.</strong> A ticket is +EV only when (adjusted jackpot ÷ odds) &gt; ticket cost. Adjusted jackpot = advertised × cash-option rate × (1 − tax rate). The EV chart above shows this calculation per historical draw, with positive-EV draws flagged in green. They are extraordinarily rare.</p>
+  <p class="timestamp">EV math uses: cash option 60% · federal tax 37% · Michigan tax 4.25% · effective net rate 0.3525. Odds shown are advertised game odds; secondary tier prizes ignored for simplicity.</p>
+</div>
+
+<div class="game-section">
+  <h2>Winning Strategy: The "Money Tinker" Approach</h2>
+  <div class="summary-grid">
+    <div class="stat-card" style="border-left-color: #d64550;">
+      <div class="label">1. The Invisible Haircut</div>
+      <div class="value">~35% Payout</div>
+      <div class="secondary">Advertised $1B = ~$352M in bank after cash-option and taxes.</div>
+    </div>
+    <div class="stat-card" style="border-left-color: #4ea386;">
+      <div class="label">2. The Break-Even Point</div>
+      <div class="value">Jackpot Focus</div>
+      <div class="secondary">Only play when: (Net Jackpot / Odds) > Ticket Cost.</div>
+    </div>
+    <div class="stat-card" style="border-left-color: #dbaf56;">
+      <div class="label">3. The Shared Split</div>
+      <div class="value">Unpopular Zone</div>
+      <div class="secondary">Use 32+ zone to reduce the risk of splitting the pot with others.</div>
+    </div>
+  </div>
+  <p style="font-size: 13px; color: #8a93a0;"><strong>The Verdict:</strong> Mathematically, the lottery is a "negative sum game" 99% of the time. This dashboard is designed to identify the 1% of the time where the jackpot grows large enough to offset the astronomical odds. If the status below says "NOT WORTH IT", the math says you are buying $1 of hope for $0.30 of value.</p>
+</div>
+
+<script>
+const DATA = {"games": [{"available": true, "key": "millionaire-for-life", "display": "Millionaire for Life", "main_max": 58, "main_count": 5, "bonus_field": "bonus", "bonus_label": "Millionaire Ball", "bonus_max": 5, "ticket_cost": 5.0, "total_draws": 80, "first_date": "2026-02-22", "last_date": "2026-05-12", "latest_record": {"date": "2026-05-12", "numbers": [19, 21, 35, 38, 53], "jackpot_usd": null, "bonus": 1}, "frequency": {"1": 14, "2": 8, "3": 9, "4": 7, "5": 4, "6": 6, "7": 3, "8": 8, "9": 5, "10": 7, "11": 5, "12": 5, "13": 6, "14": 6, "15": 8, "16": 5, "17": 14, "18": 9, "19": 12, "20": 6, "21": 11, "22": 5, "23": 3, "24": 4, "25": 5, "26": 8, "27": 4, "28": 6, "29": 7, "30": 6, "31": 9, "32": 10, "33": 5, "34": 5, "35": 8, "36": 2, "37": 5, "38": 6, "39": 5, "40": 4, "41": 7, "42": 8, "43": 7, "44": 8, "45": 7, "46": 7, "47": 8, "48": 7, "49": 5, "50": 8, "51": 4, "52": 2, "53": 10, "54": 9, "55": 16, "56": 9, "57": 7, "58": 6}, "bonus_frequency": {"1": 12, "2": 14, "3": 16, "4": 24, "5": 14}, "sum_min": 63, "sum_max": 237, "sum_avg": 148.0, "sum_distribution": [63, 84, 90, 90, 95, 98, 105, 105, 106, 107, 109, 111, 111, 113, 114, 117, 119, 120, 120, 122, 122, 123, 124, 126, 129, 130, 132, 138, 138, 138, 141, 142, 142, 142, 142, 142, 145, 145, 146, 146, 147, 150, 150, 150, 151, 153, 153, 155, 156, 157, 158, 159, 159, 159, 161, 163, 163, 163, 164, 164, 166, 166, 167, 168, 174, 175, 183, 183, 186, 187, 190, 191, 194, 199, 210, 216, 221, 229, 234, 237], "gap_analysis": [{"number": 33, "last_date": "2026-03-27", "draws_since": 46}, {"number": 7, "last_date": "2026-04-02", "draws_since": 40}, {"number": 27, "last_date": "2026-04-06", "draws_since": 36}, {"number": 9, "last_date": "2026-04-07", "draws_since": 35}, {"number": 13, "last_date": "2026-04-13", "draws_since": 29}, {"number": 36, "last_date": "2026-04-15", "draws_since": 27}, {"number": 54, "last_date": "2026-04-15", "draws_since": 27}, {"number": 57, "last_date": "2026-04-17", "draws_since": 25}, {"number": 52, "last_date": "2026-04-19", "draws_since": 23}, {"number": 41, "last_date": "2026-04-20", "draws_since": 22}, {"number": 40, "last_date": "2026-04-21", "draws_since": 21}, {"number": 58, "last_date": "2026-04-21", "draws_since": 21}, {"number": 25, "last_date": "2026-04-23", "draws_since": 19}, {"number": 37, "last_date": "2026-04-23", "draws_since": 19}, {"number": 12, "last_date": "2026-04-24", "draws_since": 18}, {"number": 47, "last_date": "2026-04-25", "draws_since": 17}, {"number": 2, "last_date": "2026-04-26", "draws_since": 16}, {"number": 4, "last_date": "2026-04-27", "draws_since": 15}, {"number": 10, "last_date": "2026-04-29", "draws_since": 13}, {"number": 24, "last_date": "2026-05-01", "draws_since": 11}], "unpopular": {"avg_fraction_32plus": 0.4625, "draws_all_32plus": 3, "n": 80}, "recommended_picks": [32, 53, 54, 55, 56], "ev": null}, {"available": true, "key": "classic-lotto-47", "display": "Classic Lotto 47", "main_max": 47, "main_count": 6, "bonus_field": null, "bonus_label": null, "bonus_max": null, "ticket_cost": 1.0, "total_draws": 142, "first_date": "2025-01-01", "last_date": "2026-05-09", "latest_record": {"date": "2026-05-09", "numbers": [2, 7, 12, 14, 26, 34], "jackpot_usd": 1150000}, "frequency": {"1": 16, "2": 29, "3": 18, "4": 17, "5": 17, "6": 17, "7": 14, "8": 17, "9": 22, "10": 13, "11": 18, "12": 22, "13": 20, "14": 27, "15": 19, "16": 13, "17": 17, "18": 13, "19": 19, "20": 19, "21": 30, "22": 13, "23": 19, "24": 15, "25": 22, "26": 20, "27": 19, "28": 19, "29": 19, "30": 14, "31": 20, "32": 19, "33": 27, "34": 15, "35": 14, "36": 17, "37": 20, "38": 21, "39": 10, "40": 15, "41": 19, "42": 19, "43": 15, "44": 19, "45": 19, "46": 11, "47": 15}, "bonus_frequency": null, "sum_min": 52, "sum_max": 216, "sum_avg": 140.7, "sum_distribution": [52, 68, 73, 75, 81, 81, 83, 83, 87, 88, 90, 94, 95, 96, 96, 97, 100, 103, 103, 107, 107, 109, 112, 113, 113, 113, 115, 115, 115, 116, 116, 117, 117, 118, 119, 121, 122, 122, 123, 123, 123, 123, 124, 125, 126, 126, 126, 127, 127, 127, 128, 128, 128, 129, 130, 131, 133, 134, 135, 136, 136, 138, 138, 139, 139, 140, 140, 141, 141, 142, 142, 142, 142, 143, 144, 145, 145, 145, 145, 145, 147, 147, 149, 149, 149, 149, 149, 150, 151, 151, 152, 153, 153, 153, 154, 156, 156, 158, 158, 158, 158, 158, 160, 161, 162, 162, 163, 164, 164, 165, 166, 166, 167, 168, 168, 168, 169, 170, 172, 174, 175, 175, 178, 178, 178, 181, 183, 184, 185, 187, 187, 188, 190, 190, 191, 194, 194, 198, 200, 201, 208, 216], "gap_analysis": [{"number": 28, "last_date": "2026-01-31", "draws_since": 28}, {"number": 39, "last_date": "2026-02-21", "draws_since": 22}, {"number": 3, "last_date": "2026-02-25", "draws_since": 21}, {"number": 9, "last_date": "2026-02-28", "draws_since": 20}, {"number": 35, "last_date": "2026-02-28", "draws_since": 20}, {"number": 37, "last_date": "2026-03-18", "draws_since": 15}, {"number": 1, "last_date": "2026-03-25", "draws_since": 13}, {"number": 11, "last_date": "2026-04-01", "draws_since": 11}, {"number": 38, "last_date": "2026-04-01", "draws_since": 11}, {"number": 22, "last_date": "2026-04-04", "draws_since": 10}, {"number": 46, "last_date": "2026-04-04", "draws_since": 10}, {"number": 6, "last_date": "2026-04-08", "draws_since": 9}, {"number": 31, "last_date": "2026-04-11", "draws_since": 8}, {"number": 47, "last_date": "2026-04-11", "draws_since": 8}, {"number": 10, "last_date": "2026-04-15", "draws_since": 7}, {"number": 40, "last_date": "2026-04-15", "draws_since": 7}, {"number": 21, "last_date": "2026-04-18", "draws_since": 6}, {"number": 25, "last_date": "2026-04-18", "draws_since": 6}, {"number": 41, "last_date": "2026-04-18", "draws_since": 6}, {"number": 15, "last_date": "2026-04-22", "draws_since": 5}], "unpopular": {"avg_fraction_32plus": 0.3227699530516432, "draws_all_32plus": 0, "n": 142}, "recommended_picks": [32, 33, 37, 38, 41, 42], "ev": {"break_even_usd": 30461200, "history": [{"date": "2025-01-01", "jackpot_usd": 1200000, "ev": -0.9606, "is_positive": false}, {"date": "2025-01-04", "jackpot_usd": 1250000, "ev": -0.959, "is_positive": false}, {"date": "2025-01-08", "jackpot_usd": 1300000, "ev": -0.9573, "is_positive": false}, {"date": "2025-01-11", "jackpot_usd": 1000000, "ev": -0.9672, "is_positive": false}, {"date": "2025-01-15", "jackpot_usd": 1050000, "ev": -0.9655, "is_positive": false}, {"date": "2025-01-18", "jackpot_usd": 1100000, "ev": -0.9639, "is_positive": false}, {"date": "2025-01-22", "jackpot_usd": 1150000, "ev": -0.9622, "is_positive": false}, {"date": "2025-01-25", "jackpot_usd": 1200000, "ev": -0.9606, "is_positive": false}, {"date": "2025-01-29", "jackpot_usd": 1250000, "ev": -0.959, "is_positive": false}, {"date": "2025-02-01", "jackpot_usd": 1300000, "ev": -0.9573, "is_positive": false}, {"date": "2025-02-05", "jackpot_usd": 1350000, "ev": -0.9557, "is_positive": false}, {"date": "2025-02-08", "jackpot_usd": 1400000, "ev": -0.954, "is_positive": false}, {"date": "2025-02-12", "jackpot_usd": 1450000, "ev": -0.9524, "is_positive": false}, {"date": "2025-02-15", "jackpot_usd": 1550000, "ev": -0.9491, "is_positive": false}, {"date": "2025-02-19", "jackpot_usd": 1750000, "ev": -0.9425, "is_positive": false}, {"date": "2025-02-22", "jackpot_usd": 1900000, "ev": -0.9376, "is_positive": false}, {"date": "2025-02-26", "jackpot_usd": 2050000, "ev": -0.9327, "is_positive": false}, {"date": "2025-03-01", "jackpot_usd": 2200000, "ev": -0.9278, "is_positive": false}, {"date": "2025-03-05", "jackpot_usd": 2400000, "ev": -0.9212, "is_positive": false}, {"date": "2025-03-08", "jackpot_usd": 2600000, "ev": -0.9146, "is_positive": false}, {"date": "2025-03-12", "jackpot_usd": 2750000, "ev": -0.9097, "is_positive": false}, {"date": "2025-03-15", "jackpot_usd": 2950000, "ev": -0.9032, "is_positive": false}, {"date": "2025-03-19", "jackpot_usd": 3150000, "ev": -0.8966, "is_positive": false}, {"date": "2025-03-22", "jackpot_usd": 3350000, "ev": -0.89, "is_positive": false}, {"date": "2025-03-26", "jackpot_usd": 3550000, "ev": -0.8835, "is_positive": false}, {"date": "2025-03-29", "jackpot_usd": 3750000, "ev": -0.8769, "is_positive": false}, {"date": "2025-04-02", "jackpot_usd": 4000000, "ev": -0.8687, "is_positive": false}, {"date": "2025-04-05", "jackpot_usd": 4200000, "ev": -0.8621, "is_positive": false}, {"date": "2025-04-09", "jackpot_usd": 4450000, "ev": -0.8539, "is_positive": false}, {"date": "2025-04-12", "jackpot_usd": 4700000, "ev": -0.8457, "is_positive": false}, {"date": "2025-04-16", "jackpot_usd": 4900000, "ev": -0.8391, "is_positive": false}, {"date": "2025-04-19", "jackpot_usd": 5150000, "ev": -0.8309, "is_positive": false}, {"date": "2025-04-23", "jackpot_usd": 5400000, "ev": -0.8227, "is_positive": false}, {"date": "2025-04-26", "jackpot_usd": 1000000, "ev": -0.9672, "is_positive": false}, {"date": "2025-04-30", "jackpot_usd": 1050000, "ev": -0.9655, "is_positive": false}, {"date": "2025-05-03", "jackpot_usd": 1100000, "ev": -0.9639, "is_positive": false}, {"date": "2025-05-07", "jackpot_usd": 1150000, "ev": -0.9622, "is_positive": false}, {"date": "2025-05-10", "jackpot_usd": 1200000, "ev": -0.9606, "is_positive": false}, {"date": "2025-05-14", "jackpot_usd": 1250000, "ev": -0.959, "is_positive": false}, {"date": "2025-05-17", "jackpot_usd": 1300000, "ev": -0.9573, "is_positive": false}, {"date": "2025-05-21", "jackpot_usd": 1350000, "ev": -0.9557, "is_positive": false}, {"date": "2025-05-24", "jackpot_usd": 1400000, "ev": -0.954, "is_positive": false}, {"date": "2025-05-28", "jackpot_usd": 1450000, "ev": -0.9524, "is_positive": false}, {"date": "2025-05-31", "jackpot_usd": 1650000, "ev": -0.9458, "is_positive": false}, {"date": "2025-06-04", "jackpot_usd": 1800000, "ev": -0.9409, "is_positive": false}, {"date": "2025-06-07", "jackpot_usd": 1950000, "ev": -0.936, "is_positive": false}, {"date": "2025-06-11", "jackpot_usd": 2150000, "ev": -0.9294, "is_positive": false}, {"date": "2025-06-14", "jackpot_usd": 2350000, "ev": -0.9229, "is_positive": false}, {"date": "2025-06-18", "jackpot_usd": 2500000, "ev": -0.9179, "is_positive": false}, {"date": "2025-06-21", "jackpot_usd": 2700000, "ev": -0.9114, "is_positive": false}, {"date": "2025-06-25", "jackpot_usd": 2900000, "ev": -0.9048, "is_positive": false}, {"date": "2025-06-28", "jackpot_usd": 3050000, "ev": -0.8999, "is_positive": false}, {"date": "2025-07-02", "jackpot_usd": 3250000, "ev": -0.8933, "is_positive": false}, {"date": "2025-07-05", "jackpot_usd": 3450000, "ev": -0.8867, "is_positive": false}, {"date": "2025-07-09", "jackpot_usd": 3650000, "ev": -0.8802, "is_positive": false}, {"date": "2025-07-12", "jackpot_usd": 3900000, "ev": -0.872, "is_positive": false}, {"date": "2025-07-16", "jackpot_usd": 4100000, "ev": -0.8654, "is_positive": false}, {"date": "2025-07-19", "jackpot_usd": 4350000, "ev": -0.8572, "is_positive": false}, {"date": "2025-07-23", "jackpot_usd": 4650000, "ev": -0.8473, "is_positive": false}, {"date": "2025-07-26", "jackpot_usd": 4900000, "ev": -0.8391, "is_positive": false}, {"date": "2025-07-30", "jackpot_usd": 5200000, "ev": -0.8293, "is_positive": false}, {"date": "2025-08-02", "jackpot_usd": 5450000, "ev": -0.8211, "is_positive": false}, {"date": "2025-08-06", "jackpot_usd": 5750000, "ev": -0.8112, "is_positive": false}, {"date": "2025-08-09", "jackpot_usd": 6050000, "ev": -0.8014, "is_positive": false}, {"date": "2025-08-13", "jackpot_usd": 6350000, "ev": -0.7915, "is_positive": false}, {"date": "2025-08-16", "jackpot_usd": 6750000, "ev": -0.7784, "is_positive": false}, {"date": "2025-08-20", "jackpot_usd": 7050000, "ev": -0.7686, "is_positive": false}, {"date": "2025-08-23", "jackpot_usd": 7300000, "ev": -0.7604, "is_positive": false}, {"date": "2025-08-27", "jackpot_usd": 7700000, "ev": -0.7472, "is_positive": false}, {"date": "2025-08-30", "jackpot_usd": 8100000, "ev": -0.7341, "is_positive": false}, {"date": "2025-09-03", "jackpot_usd": 8500000, "ev": -0.721, "is_positive": false}, {"date": "2025-09-06", "jackpot_usd": 8900000, "ev": -0.7078, "is_positive": false}, {"date": "2025-09-10", "jackpot_usd": 9450000, "ev": -0.6898, "is_positive": false}, {"date": "2025-09-13", "jackpot_usd": 9950000, "ev": -0.6734, "is_positive": false}, {"date": "2025-09-17", "jackpot_usd": 10450000, "ev": -0.6569, "is_positive": false}, {"date": "2025-09-20", "jackpot_usd": 11000000, "ev": -0.6389, "is_positive": false}, {"date": "2025-09-24", "jackpot_usd": 11550000, "ev": -0.6208, "is_positive": false}, {"date": "2025-09-27", "jackpot_usd": 12100000, "ev": -0.6028, "is_positive": false}, {"date": "2025-10-01", "jackpot_usd": 12650000, "ev": -0.5847, "is_positive": false}, {"date": "2025-10-04", "jackpot_usd": 13150000, "ev": -0.5683, "is_positive": false}, {"date": "2025-10-08", "jackpot_usd": 13700000, "ev": -0.5502, "is_positive": false}, {"date": "2025-10-11", "jackpot_usd": 14300000, "ev": -0.5306, "is_positive": false}, {"date": "2025-10-15", "jackpot_usd": 14900000, "ev": -0.5109, "is_positive": false}, {"date": "2025-10-18", "jackpot_usd": 15400000, "ev": -0.4944, "is_positive": false}, {"date": "2025-10-22", "jackpot_usd": 16000000, "ev": -0.4747, "is_positive": false}, {"date": "2025-10-25", "jackpot_usd": 16550000, "ev": -0.4567, "is_positive": false}, {"date": "2025-10-29", "jackpot_usd": 17150000, "ev": -0.437, "is_positive": false}, {"date": "2025-11-01", "jackpot_usd": 17750000, "ev": -0.4173, "is_positive": false}, {"date": "2025-11-05", "jackpot_usd": 18400000, "ev": -0.396, "is_positive": false}, {"date": "2025-11-08", "jackpot_usd": 19000000, "ev": -0.3763, "is_positive": false}, {"date": "2025-11-12", "jackpot_usd": 19650000, "ev": -0.3549, "is_positive": false}, {"date": "2025-11-15", "jackpot_usd": 20300000, "ev": -0.3336, "is_positive": false}, {"date": "2025-11-19", "jackpot_usd": 20950000, "ev": -0.3122, "is_positive": false}, {"date": "2025-11-22", "jackpot_usd": 21650000, "ev": -0.2893, "is_positive": false}, {"date": "2025-11-26", "jackpot_usd": 22300000, "ev": -0.2679, "is_positive": false}, {"date": "2025-11-29", "jackpot_usd": 22900000, "ev": -0.2482, "is_positive": false}, {"date": "2025-12-03", "jackpot_usd": 23600000, "ev": -0.2252, "is_positive": false}, {"date": "2025-12-06", "jackpot_usd": 24600000, "ev": -0.1924, "is_positive": false}, {"date": "2025-12-10", "jackpot_usd": 27350000, "ev": -0.1021, "is_positive": false}, {"date": "2025-12-13", "jackpot_usd": 29800000, "ev": -0.0217, "is_positive": false}, {"date": "2025-12-17", "jackpot_usd": 1000000, "ev": -0.9672, "is_positive": false}, {"date": "2025-12-20", "jackpot_usd": 1050000, "ev": -0.9655, "is_positive": false}, {"date": "2025-12-24", "jackpot_usd": 1100000, "ev": -0.9639, "is_positive": false}, {"date": "2025-12-27", "jackpot_usd": 1150000, "ev": -0.9622, "is_positive": false}, {"date": "2025-12-31", "jackpot_usd": 1200000, "ev": -0.9606, "is_positive": false}, {"date": "2026-01-03", "jackpot_usd": 1250000, "ev": -0.959, "is_positive": false}, {"date": "2026-01-07", "jackpot_usd": 1350000, "ev": -0.9557, "is_positive": false}, {"date": "2026-01-10", "jackpot_usd": 1500000, "ev": -0.9508, "is_positive": false}, {"date": "2026-01-14", "jackpot_usd": 1700000, "ev": -0.9442, "is_positive": false}, {"date": "2026-01-17", "jackpot_usd": 1900000, "ev": -0.9376, "is_positive": false}, {"date": "2026-01-21", "jackpot_usd": 2050000, "ev": -0.9327, "is_positive": false}, {"date": "2026-01-24", "jackpot_usd": 2250000, "ev": -0.9261, "is_positive": false}, {"date": "2026-01-28", "jackpot_usd": 2450000, "ev": -0.9196, "is_positive": false}, {"date": "2026-01-31", "jackpot_usd": 2650000, "ev": -0.913, "is_positive": false}, {"date": "2026-02-04", "jackpot_usd": 2850000, "ev": -0.9064, "is_positive": false}, {"date": "2026-02-07", "jackpot_usd": 3050000, "ev": -0.8999, "is_positive": false}, {"date": "2026-02-11", "jackpot_usd": 3250000, "ev": -0.8933, "is_positive": false}, {"date": "2026-02-14", "jackpot_usd": 3500000, "ev": -0.8851, "is_positive": false}, {"date": "2026-02-18", "jackpot_usd": 3700000, "ev": -0.8785, "is_positive": false}, {"date": "2026-02-21", "jackpot_usd": 3950000, "ev": -0.8703, "is_positive": false}, {"date": "2026-02-25", "jackpot_usd": 1000000, "ev": -0.9672, "is_positive": false}, {"date": "2026-02-28", "jackpot_usd": 1050000, "ev": -0.9655, "is_positive": false}, {"date": "2026-03-04", "jackpot_usd": 1100000, "ev": -0.9639, "is_positive": false}, {"date": "2026-03-07", "jackpot_usd": 1150000, "ev": -0.9622, "is_positive": false}, {"date": "2026-03-11", "jackpot_usd": 1200000, "ev": -0.9606, "is_positive": false}, {"date": "2026-03-14", "jackpot_usd": 1000000, "ev": -0.9672, "is_positive": false}, {"date": "2026-03-18", "jackpot_usd": 1050000, "ev": -0.9655, "is_positive": false}, {"date": "2026-03-21", "jackpot_usd": 1100000, "ev": -0.9639, "is_positive": false}, {"date": "2026-03-25", "jackpot_usd": 1000000, "ev": -0.9672, "is_positive": false}, {"date": "2026-03-28", "jackpot_usd": 1050000, "ev": -0.9655, "is_positive": false}, {"date": "2026-04-01", "jackpot_usd": 1100000, "ev": -0.9639, "is_positive": false}, {"date": "2026-04-04", "jackpot_usd": 1150000, "ev": -0.9622, "is_positive": false}, {"date": "2026-04-08", "jackpot_usd": 1200000, "ev": -0.9606, "is_positive": false}, {"date": "2026-04-11", "jackpot_usd": 1250000, "ev": -0.959, "is_positive": false}, {"date": "2026-04-15", "jackpot_usd": 1300000, "ev": -0.9573, "is_positive": false}, {"date": "2026-04-18", "jackpot_usd": 1350000, "ev": -0.9557, "is_positive": false}, {"date": "2026-04-22", "jackpot_usd": 1450000, "ev": -0.9524, "is_positive": false}, {"date": "2026-04-25", "jackpot_usd": 1650000, "ev": -0.9458, "is_positive": false}, {"date": "2026-04-29", "jackpot_usd": 1000000, "ev": -0.9672, "is_positive": false}, {"date": "2026-05-02", "jackpot_usd": 1050000, "ev": -0.9655, "is_positive": false}, {"date": "2026-05-06", "jackpot_usd": 1100000, "ev": -0.9639, "is_positive": false}, {"date": "2026-05-09", "jackpot_usd": 1150000, "ev": -0.9622, "is_positive": false}], "odds_one_in": 10737573, "ticket_cost": 1.0, "net_rate": 0.3525, "positive_count": 0}}, {"available": true, "key": "mega-millions", "display": "Mega Millions", "main_max": 70, "main_count": 5, "bonus_field": "megaball", "bonus_label": "Mega Ball", "bonus_max": 25, "ticket_cost": 5.0, "total_draws": 142, "first_date": "2025-01-03", "last_date": "2026-05-12", "latest_record": {"date": "2026-05-12", "numbers": [17, 32, 35, 40, 47], "jackpot_usd": 232000000, "megaball": 17}, "frequency": {"1": 8, "2": 9, "3": 5, "4": 11, "5": 6, "6": 11, "7": 7, "8": 11, "9": 8, "10": 14, "11": 17, "12": 11, "13": 11, "14": 11, "15": 7, "16": 11, "17": 14, "18": 16, "19": 14, "20": 8, "21": 12, "22": 10, "23": 6, "24": 14, "25": 7, "26": 5, "27": 14, "28": 9, "29": 5, "30": 12, "31": 15, "32": 9, "33": 11, "34": 9, "35": 9, "36": 9, "37": 11, "38": 13, "39": 13, "40": 16, "41": 11, "42": 17, "43": 13, "44": 6, "45": 6, "46": 6, "47": 10, "48": 10, "49": 18, "50": 8, "51": 5, "52": 12, "53": 6, "54": 7, "55": 10, "56": 16, "57": 8, "58": 14, "59": 9, "60": 8, "61": 5, "62": 13, "63": 15, "64": 8, "65": 8, "66": 9, "67": 4, "68": 9, "69": 12, "70": 8}, "bonus_frequency": {"1": 9, "2": 8, "3": 3, "4": 5, "5": 5, "6": 8, "7": 8, "8": 5, "9": 6, "10": 7, "11": 2, "12": 6, "13": 5, "14": 4, "15": 3, "16": 11, "17": 5, "18": 7, "19": 6, "20": 2, "21": 4, "22": 7, "23": 5, "24": 10, "25": 1}, "sum_min": 78, "sum_max": 270, "sum_avg": 175.3, "sum_distribution": [78, 79, 89, 95, 107, 112, 113, 116, 118, 118, 120, 121, 122, 123, 124, 125, 127, 130, 132, 132, 133, 134, 137, 139, 139, 140, 141, 144, 146, 148, 148, 148, 149, 150, 151, 151, 151, 151, 153, 154, 156, 156, 158, 159, 160, 161, 161, 162, 163, 163, 163, 163, 164, 164, 164, 165, 165, 165, 166, 166, 166, 167, 167, 167, 168, 170, 171, 171, 171, 171, 173, 176, 176, 177, 177, 177, 177, 178, 178, 178, 178, 179, 180, 180, 181, 183, 184, 186, 186, 187, 187, 188, 188, 190, 190, 190, 191, 194, 194, 194, 195, 197, 197, 197, 198, 198, 199, 200, 200, 200, 202, 202, 204, 204, 204, 205, 207, 211, 212, 214, 221, 223, 223, 224, 226, 227, 230, 230, 231, 232, 233, 236, 236, 240, 242, 242, 242, 242, 250, 257, 269, 270], "gap_analysis": [{"number": 29, "last_date": "2025-08-01", "draws_since": 81}, {"number": 23, "last_date": "2025-11-18", "draws_since": 50}, {"number": 10, "last_date": "2025-12-12", "draws_since": 43}, {"number": 46, "last_date": "2025-12-16", "draws_since": 42}, {"number": 9, "last_date": "2026-01-06", "draws_since": 36}, {"number": 64, "last_date": "2026-01-13", "draws_since": 34}, {"number": 2, "last_date": "2026-01-16", "draws_since": 33}, {"number": 70, "last_date": "2026-01-20", "draws_since": 32}, {"number": 25, "last_date": "2026-02-10", "draws_since": 26}, {"number": 34, "last_date": "2026-02-13", "draws_since": 25}, {"number": 59, "last_date": "2026-02-13", "draws_since": 25}, {"number": 48, "last_date": "2026-02-20", "draws_since": 23}, {"number": 39, "last_date": "2026-02-27", "draws_since": 21}, {"number": 67, "last_date": "2026-02-27", "draws_since": 21}, {"number": 54, "last_date": "2026-03-03", "draws_since": 20}, {"number": 8, "last_date": "2026-03-06", "draws_since": 19}, {"number": 26, "last_date": "2026-03-06", "draws_since": 19}, {"number": 30, "last_date": "2026-03-10", "draws_since": 18}, {"number": 6, "last_date": "2026-03-13", "draws_since": 17}, {"number": 19, "last_date": "2026-03-13", "draws_since": 17}], "unpopular": {"avg_fraction_32plus": 0.5507042253521127, "draws_all_32plus": 5, "n": 142}, "recommended_picks": [40, 42, 49, 56, 63], "ev": {"break_even_usd": 4120174977, "history": [{"date": "2025-01-03", "jackpot_usd": 42000000, "ev": -1.949, "is_positive": false}, {"date": "2025-01-07", "jackpot_usd": 62000000, "ev": -1.9248, "is_positive": false}, {"date": "2025-01-10", "jackpot_usd": 77000000, "ev": -1.9066, "is_positive": false}, {"date": "2025-01-14", "jackpot_usd": 95000000, "ev": -1.8847, "is_positive": false}, {"date": "2025-01-17", "jackpot_usd": 113000000, "ev": -1.8629, "is_positive": false}, {"date": "2025-01-21", "jackpot_usd": 20000000, "ev": -1.9757, "is_positive": false}, {"date": "2025-01-24", "jackpot_usd": 28000000, "ev": -1.966, "is_positive": false}, {"date": "2025-01-28", "jackpot_usd": 44000000, "ev": -1.9466, "is_positive": false}, {"date": "2025-01-31", "jackpot_usd": 59000000, "ev": -1.9284, "is_positive": false}, {"date": "2025-02-04", "jackpot_usd": 77000000, "ev": -1.9066, "is_positive": false}, {"date": "2025-02-07", "jackpot_usd": 94000000, "ev": -1.8859, "is_positive": false}, {"date": "2025-02-11", "jackpot_usd": 110000000, "ev": -1.8665, "is_positive": false}, {"date": "2025-02-14", "jackpot_usd": 129000000, "ev": -1.8435, "is_positive": false}, {"date": "2025-02-18", "jackpot_usd": 145000000, "ev": -1.824, "is_positive": false}, {"date": "2025-02-21", "jackpot_usd": 165000000, "ev": -1.7998, "is_positive": false}, {"date": "2025-02-25", "jackpot_usd": 181000000, "ev": -1.7803, "is_positive": false}, {"date": "2025-02-28", "jackpot_usd": 197000000, "ev": -1.7609, "is_positive": false}, {"date": "2025-03-04", "jackpot_usd": 215000000, "ev": -1.7391, "is_positive": false}, {"date": "2025-03-07", "jackpot_usd": 233000000, "ev": -1.7172, "is_positive": false}, {"date": "2025-03-11", "jackpot_usd": 256000000, "ev": -1.6893, "is_positive": false}, {"date": "2025-03-14", "jackpot_usd": 277000000, "ev": -1.6638, "is_positive": false}, {"date": "2025-03-18", "jackpot_usd": 301000000, "ev": -1.6347, "is_positive": false}, {"date": "2025-03-21", "jackpot_usd": 324000000, "ev": -1.6068, "is_positive": false}, {"date": "2025-03-25", "jackpot_usd": 344000000, "ev": -1.5825, "is_positive": false}, {"date": "2025-03-28", "jackpot_usd": 20000000, "ev": -1.9757, "is_positive": false}, {"date": "2025-04-01", "jackpot_usd": 29000000, "ev": -1.9648, "is_positive": false}, {"date": "2025-04-04", "jackpot_usd": 43000000, "ev": -1.9478, "is_positive": false}, {"date": "2025-04-08", "jackpot_usd": 54000000, "ev": -1.9345, "is_positive": false}, {"date": "2025-04-11", "jackpot_usd": 72000000, "ev": -1.9126, "is_positive": false}, {"date": "2025-04-15", "jackpot_usd": 96000000, "ev": -1.8835, "is_positive": false}, {"date": "2025-04-18", "jackpot_usd": 112000000, "ev": -1.8641, "is_positive": false}, {"date": "2025-04-22", "jackpot_usd": 50000000, "ev": -1.9393, "is_positive": false}, {"date": "2025-04-25", "jackpot_usd": 60000000, "ev": -1.9272, "is_positive": false}, {"date": "2025-04-29", "jackpot_usd": 70000000, "ev": -1.9151, "is_positive": false}, {"date": "2025-05-02", "jackpot_usd": 80000000, "ev": -1.9029, "is_positive": false}, {"date": "2025-05-06", "jackpot_usd": 90000000, "ev": -1.8908, "is_positive": false}, {"date": "2025-05-09", "jackpot_usd": 100000000, "ev": -1.8786, "is_positive": false}, {"date": "2025-05-13", "jackpot_usd": 110000000, "ev": -1.8665, "is_positive": false}, {"date": "2025-05-16", "jackpot_usd": 122000000, "ev": -1.8519, "is_positive": false}, {"date": "2025-05-20", "jackpot_usd": 139000000, "ev": -1.8313, "is_positive": false}, {"date": "2025-05-23", "jackpot_usd": 154000000, "ev": -1.8131, "is_positive": false}, {"date": "2025-05-27", "jackpot_usd": 173000000, "ev": -1.7901, "is_positive": false}, {"date": "2025-05-30", "jackpot_usd": 189000000, "ev": -1.7706, "is_positive": false}, {"date": "2025-06-03", "jackpot_usd": 202000000, "ev": -1.7549, "is_positive": false}, {"date": "2025-06-06", "jackpot_usd": 223000000, "ev": -1.7294, "is_positive": false}, {"date": "2025-06-10", "jackpot_usd": 243000000, "ev": -1.7051, "is_positive": false}, {"date": "2025-06-13", "jackpot_usd": 264000000, "ev": -1.6796, "is_positive": false}, {"date": "2025-06-17", "jackpot_usd": 280000000, "ev": -1.6602, "is_positive": false}, {"date": "2025-06-20", "jackpot_usd": 302000000, "ev": -1.6335, "is_positive": false}, {"date": "2025-06-24", "jackpot_usd": 326000000, "ev": -1.6044, "is_positive": false}, {"date": "2025-06-27", "jackpot_usd": 348000000, "ev": -1.5777, "is_positive": false}, {"date": "2025-07-01", "jackpot_usd": 50000000, "ev": -1.9393, "is_positive": false}, {"date": "2025-07-04", "jackpot_usd": 60000000, "ev": -1.9272, "is_positive": false}, {"date": "2025-07-08", "jackpot_usd": 70000000, "ev": -1.9151, "is_positive": false}, {"date": "2025-07-11", "jackpot_usd": 80000000, "ev": -1.9029, "is_positive": false}, {"date": "2025-07-15", "jackpot_usd": 90000000, "ev": -1.8908, "is_positive": false}, {"date": "2025-07-18", "jackpot_usd": 100000000, "ev": -1.8786, "is_positive": false}, {"date": "2025-07-22", "jackpot_usd": 110000000, "ev": -1.8665, "is_positive": false}, {"date": "2025-07-25", "jackpot_usd": 120000000, "ev": -1.8544, "is_positive": false}, {"date": "2025-07-29", "jackpot_usd": 130000000, "ev": -1.8422, "is_positive": false}, {"date": "2025-08-01", "jackpot_usd": 140000000, "ev": -1.8301, "is_positive": false}, {"date": "2025-08-05", "jackpot_usd": 150000000, "ev": -1.818, "is_positive": false}, {"date": "2025-08-08", "jackpot_usd": 166000000, "ev": -1.7986, "is_positive": false}, {"date": "2025-08-12", "jackpot_usd": 182000000, "ev": -1.7791, "is_positive": false}, {"date": "2025-08-15", "jackpot_usd": 198000000, "ev": -1.7597, "is_positive": false}, {"date": "2025-08-19", "jackpot_usd": 216000000, "ev": -1.7379, "is_positive": false}, {"date": "2025-08-22", "jackpot_usd": 234000000, "ev": -1.716, "is_positive": false}, {"date": "2025-08-26", "jackpot_usd": 253000000, "ev": -1.693, "is_positive": false}, {"date": "2025-08-29", "jackpot_usd": 277000000, "ev": -1.6638, "is_positive": false}, {"date": "2025-09-02", "jackpot_usd": 302000000, "ev": -1.6335, "is_positive": false}, {"date": "2025-09-05", "jackpot_usd": 336000000, "ev": -1.5923, "is_positive": false}, {"date": "2025-09-09", "jackpot_usd": 358000000, "ev": -1.5656, "is_positive": false}, {"date": "2025-09-12", "jackpot_usd": 381000000, "ev": -1.5376, "is_positive": false}, {"date": "2025-09-16", "jackpot_usd": 400000000, "ev": -1.5146, "is_positive": false}, {"date": "2025-09-19", "jackpot_usd": 423000000, "ev": -1.4867, "is_positive": false}, {"date": "2025-09-23", "jackpot_usd": 451000000, "ev": -1.4527, "is_positive": false}, {"date": "2025-09-26", "jackpot_usd": 474000000, "ev": -1.4248, "is_positive": false}, {"date": "2025-09-30", "jackpot_usd": 497000000, "ev": -1.3969, "is_positive": false}, {"date": "2025-10-03", "jackpot_usd": 520000000, "ev": -1.369, "is_positive": false}, {"date": "2025-10-07", "jackpot_usd": 547000000, "ev": -1.3362, "is_positive": false}, {"date": "2025-10-10", "jackpot_usd": 575000000, "ev": -1.3022, "is_positive": false}, {"date": "2025-10-14", "jackpot_usd": 600000000, "ev": -1.2719, "is_positive": false}, {"date": "2025-10-17", "jackpot_usd": 625000000, "ev": -1.2415, "is_positive": false}, {"date": "2025-10-21", "jackpot_usd": 650000000, "ev": -1.2112, "is_positive": false}, {"date": "2025-10-24", "jackpot_usd": 680000000, "ev": -1.1748, "is_positive": false}, {"date": "2025-10-28", "jackpot_usd": 714000000, "ev": -1.1335, "is_positive": false}, {"date": "2025-10-31", "jackpot_usd": 754000000, "ev": -1.085, "is_positive": false}, {"date": "2025-11-04", "jackpot_usd": 800000000, "ev": -1.0292, "is_positive": false}, {"date": "2025-11-07", "jackpot_usd": 843000000, "ev": -0.977, "is_positive": false}, {"date": "2025-11-11", "jackpot_usd": 900000000, "ev": -0.9078, "is_positive": false}, {"date": "2025-11-14", "jackpot_usd": 980000000, "ev": -0.8107, "is_positive": false}, {"date": "2025-11-18", "jackpot_usd": 50000000, "ev": -1.9393, "is_positive": false}, {"date": "2025-11-21", "jackpot_usd": 60000000, "ev": -1.9272, "is_positive": false}, {"date": "2025-11-25", "jackpot_usd": 70000000, "ev": -1.9151, "is_positive": false}, {"date": "2025-11-28", "jackpot_usd": 80000000, "ev": -1.9029, "is_positive": false}, {"date": "2025-12-02", "jackpot_usd": 90000000, "ev": -1.8908, "is_positive": false}, {"date": "2025-12-05", "jackpot_usd": 50000000, "ev": -1.9393, "is_positive": false}, {"date": "2025-12-09", "jackpot_usd": 60000000, "ev": -1.9272, "is_positive": false}, {"date": "2025-12-12", "jackpot_usd": 70000000, "ev": -1.9151, "is_positive": false}, {"date": "2025-12-16", "jackpot_usd": 80000000, "ev": -1.9029, "is_positive": false}, {"date": "2025-12-19", "jackpot_usd": 90000000, "ev": -1.8908, "is_positive": false}, {"date": "2025-12-23", "jackpot_usd": 100000000, "ev": -1.8786, "is_positive": false}, {"date": "2025-12-26", "jackpot_usd": 125000000, "ev": -1.8483, "is_positive": false}, {"date": "2025-12-30", "jackpot_usd": 138000000, "ev": -1.8325, "is_positive": false}, {"date": "2026-01-02", "jackpot_usd": 157000000, "ev": -1.8095, "is_positive": false}, {"date": "2026-01-06", "jackpot_usd": 180000000, "ev": -1.7816, "is_positive": false}, {"date": "2026-01-09", "jackpot_usd": 199000000, "ev": -1.7585, "is_positive": false}, {"date": "2026-01-13", "jackpot_usd": 215000000, "ev": -1.7391, "is_positive": false}, {"date": "2026-01-16", "jackpot_usd": 230000000, "ev": -1.7209, "is_positive": false}, {"date": "2026-01-20", "jackpot_usd": 250000000, "ev": -1.6966, "is_positive": false}, {"date": "2026-01-23", "jackpot_usd": 266000000, "ev": -1.6772, "is_positive": false}, {"date": "2026-01-27", "jackpot_usd": 285000000, "ev": -1.6541, "is_positive": false}, {"date": "2026-01-30", "jackpot_usd": 303000000, "ev": -1.6323, "is_positive": false}, {"date": "2026-02-03", "jackpot_usd": 323000000, "ev": -1.608, "is_positive": false}, {"date": "2026-02-06", "jackpot_usd": 346000000, "ev": -1.5801, "is_positive": false}, {"date": "2026-02-10", "jackpot_usd": 366000000, "ev": -1.5558, "is_positive": false}, {"date": "2026-02-13", "jackpot_usd": 385000000, "ev": -1.5328, "is_positive": false}, {"date": "2026-02-17", "jackpot_usd": 395000000, "ev": -1.5207, "is_positive": false}, {"date": "2026-02-20", "jackpot_usd": 416000000, "ev": -1.4952, "is_positive": false}, {"date": "2026-02-24", "jackpot_usd": 438000000, "ev": -1.4685, "is_positive": false}, {"date": "2026-02-27", "jackpot_usd": 458000000, "ev": -1.4442, "is_positive": false}, {"date": "2026-03-03", "jackpot_usd": 473000000, "ev": -1.426, "is_positive": false}, {"date": "2026-03-06", "jackpot_usd": 496000000, "ev": -1.3981, "is_positive": false}, {"date": "2026-03-10", "jackpot_usd": 533000000, "ev": -1.3532, "is_positive": false}, {"date": "2026-03-13", "jackpot_usd": 50000000, "ev": -1.9393, "is_positive": false}, {"date": "2026-03-17", "jackpot_usd": 60000000, "ev": -1.9272, "is_positive": false}, {"date": "2026-03-20", "jackpot_usd": 50000000, "ev": -1.9393, "is_positive": false}, {"date": "2026-03-24", "jackpot_usd": 60000000, "ev": -1.9272, "is_positive": false}, {"date": "2026-03-27", "jackpot_usd": 70000000, "ev": -1.9151, "is_positive": false}, {"date": "2026-03-31", "jackpot_usd": 80000000, "ev": -1.9029, "is_positive": false}, {"date": "2026-04-03", "jackpot_usd": 90000000, "ev": -1.8908, "is_positive": false}, {"date": "2026-04-07", "jackpot_usd": 100000000, "ev": -1.8786, "is_positive": false}, {"date": "2026-04-10", "jackpot_usd": 110000000, "ev": -1.8665, "is_positive": false}, {"date": "2026-04-14", "jackpot_usd": 120000000, "ev": -1.8544, "is_positive": false}, {"date": "2026-04-17", "jackpot_usd": 130000000, "ev": -1.8422, "is_positive": false}, {"date": "2026-04-21", "jackpot_usd": 140000000, "ev": -1.8301, "is_positive": false}, {"date": "2026-04-24", "jackpot_usd": 150000000, "ev": -1.818, "is_positive": false}, {"date": "2026-04-28", "jackpot_usd": 163000000, "ev": -1.8022, "is_positive": false}, {"date": "2026-05-01", "jackpot_usd": 178000000, "ev": -1.784, "is_positive": false}, {"date": "2026-05-05", "jackpot_usd": 195000000, "ev": -1.7634, "is_positive": false}, {"date": "2026-05-08", "jackpot_usd": 215000000, "ev": -1.7391, "is_positive": false}, {"date": "2026-05-12", "jackpot_usd": 232000000, "ev": -1.7185, "is_positive": false}], "odds_one_in": 290472336, "ticket_cost": 2.0, "net_rate": 0.3525, "positive_count": 0}}, {"available": true, "key": "powerball", "display": "Powerball", "main_max": 69, "main_count": 5, "bonus_field": "powerball", "bonus_label": "Powerball", "bonus_max": 26, "ticket_cost": 2.0, "total_draws": 213, "first_date": "2025-01-01", "last_date": "2026-05-11", "latest_record": {"date": "2026-05-11", "numbers": [24, 30, 37, 56, 64], "jackpot_usd": 57000000, "powerball": 7, "powerplay": 3}, "frequency": {"1": 9, "2": 13, "3": 19, "4": 18, "5": 15, "6": 19, "7": 19, "8": 18, "9": 9, "10": 10, "11": 17, "12": 14, "13": 11, "14": 13, "15": 14, "16": 19, "17": 14, "18": 23, "19": 13, "20": 13, "21": 16, "22": 9, "23": 22, "24": 14, "25": 12, "26": 8, "27": 16, "28": 31, "29": 19, "30": 14, "31": 15, "32": 17, "33": 15, "34": 13, "35": 17, "36": 18, "37": 16, "38": 8, "39": 10, "40": 18, "41": 11, "42": 16, "43": 21, "44": 15, "45": 12, "46": 11, "47": 19, "48": 13, "49": 17, "50": 15, "51": 17, "52": 26, "53": 21, "54": 14, "55": 10, "56": 15, "57": 14, "58": 14, "59": 17, "60": 19, "61": 15, "62": 19, "63": 17, "64": 22, "65": 16, "66": 16, "67": 11, "68": 10, "69": 14}, "bonus_frequency": {"1": 15, "2": 13, "3": 7, "4": 8, "5": 11, "6": 9, "7": 4, "8": 3, "9": 7, "10": 4, "11": 6, "12": 8, "13": 5, "14": 12, "15": 9, "16": 2, "17": 5, "18": 6, "19": 9, "20": 15, "21": 8, "22": 7, "23": 11, "24": 11, "25": 11, "26": 7}, "sum_min": 77, "sum_max": 285, "sum_avg": 176.7, "sum_distribution": [77, 94, 99, 101, 103, 105, 108, 109, 112, 114, 115, 120, 122, 122, 122, 123, 125, 125, 125, 127, 127, 128, 128, 129, 130, 130, 131, 132, 132, 134, 135, 136, 136, 137, 137, 138, 138, 139, 140, 141, 141, 141, 142, 143, 145, 146, 146, 146, 147, 147, 147, 147, 148, 149, 149, 149, 150, 152, 152, 153, 153, 154, 154, 155, 156, 157, 157, 157, 157, 158, 158, 158, 159, 159, 160, 161, 162, 162, 163, 163, 163, 163, 164, 164, 164, 164, 165, 165, 165, 165, 166, 167, 167, 167, 167, 168, 170, 170, 171, 171, 171, 172, 173, 174, 174, 174, 175, 175, 175, 175, 175, 176, 176, 177, 177, 178, 178, 179, 179, 179, 180, 180, 180, 180, 181, 181, 182, 182, 183, 183, 183, 183, 183, 184, 185, 185, 188, 188, 188, 191, 192, 192, 192, 192, 192, 193, 194, 195, 196, 196, 196, 196, 197, 197, 198, 201, 201, 202, 203, 203, 204, 205, 209, 209, 210, 210, 210, 211, 211, 212, 212, 212, 212, 213, 213, 213, 215, 216, 216, 216, 216, 220, 220, 221, 221, 221, 222, 224, 226, 227, 228, 229, 230, 231, 233, 236, 239, 241, 243, 246, 246, 246, 248, 248, 249, 253, 256, 257, 257, 267, 272, 276, 285], "gap_analysis": [{"number": 44, "last_date": "2025-12-06", "draws_since": 67}, {"number": 1, "last_date": "2025-12-13", "draws_since": 64}, {"number": 34, "last_date": "2026-01-19", "draws_since": 48}, {"number": 26, "last_date": "2026-01-21", "draws_since": 47}, {"number": 8, "last_date": "2026-02-02", "draws_since": 42}, {"number": 40, "last_date": "2026-02-11", "draws_since": 38}, {"number": 66, "last_date": "2026-02-18", "draws_since": 35}, {"number": 48, "last_date": "2026-02-21", "draws_since": 34}, {"number": 5, "last_date": "2026-02-23", "draws_since": 33}, {"number": 2, "last_date": "2026-03-02", "draws_since": 30}, {"number": 22, "last_date": "2026-03-09", "draws_since": 27}, {"number": 23, "last_date": "2026-03-09", "draws_since": 27}, {"number": 54, "last_date": "2026-03-09", "draws_since": 27}, {"number": 58, "last_date": "2026-03-11", "draws_since": 26}, {"number": 50, "last_date": "2026-03-14", "draws_since": 25}, {"number": 20, "last_date": "2026-03-16", "draws_since": 24}, {"number": 14, "last_date": "2026-03-18", "draws_since": 23}, {"number": 69, "last_date": "2026-03-18", "draws_since": 23}, {"number": 28, "last_date": "2026-03-21", "draws_since": 22}, {"number": 12, "last_date": "2026-03-23", "draws_since": 21}], "unpopular": {"avg_fraction_32plus": 0.5530516431924882, "draws_all_32plus": 4, "n": 213}, "recommended_picks": [43, 47, 52, 53, 64], "ev": {"break_even_usd": 1657879931, "history": [{"date": "2025-01-01", "jackpot_usd": 178000000, "ev": -1.7853, "is_positive": false}, {"date": "2025-01-04", "jackpot_usd": 200000000, "ev": -1.7587, "is_positive": false}, {"date": "2025-01-06", "jackpot_usd": 220000000, "ev": -1.7346, "is_positive": false}, {"date": "2025-01-08", "jackpot_usd": 240000000, "ev": -1.7105, "is_positive": false}, {"date": "2025-01-11", "jackpot_usd": 263000000, "ev": -1.6827, "is_positive": false}, {"date": "2025-01-13", "jackpot_usd": 285000000, "ev": -1.6562, "is_positive": false}, {"date": "2025-01-15", "jackpot_usd": 303000000, "ev": -1.6345, "is_positive": false}, {"date": "2025-01-18", "jackpot_usd": 331000000, "ev": -1.6007, "is_positive": false}, {"date": "2025-01-20", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2025-01-22", "jackpot_usd": 31000000, "ev": -1.9626, "is_positive": false}, {"date": "2025-01-25", "jackpot_usd": 46000000, "ev": -1.9445, "is_positive": false}, {"date": "2025-01-27", "jackpot_usd": 56000000, "ev": -1.9324, "is_positive": false}, {"date": "2025-01-29", "jackpot_usd": 69000000, "ev": -1.9168, "is_positive": false}, {"date": "2025-02-01", "jackpot_usd": 89000000, "ev": -1.8926, "is_positive": false}, {"date": "2025-02-03", "jackpot_usd": 100000000, "ev": -1.8794, "is_positive": false}, {"date": "2025-02-05", "jackpot_usd": 113000000, "ev": -1.8637, "is_positive": false}, {"date": "2025-02-08", "jackpot_usd": 133000000, "ev": -1.8396, "is_positive": false}, {"date": "2025-02-10", "jackpot_usd": 142000000, "ev": -1.8287, "is_positive": false}, {"date": "2025-02-12", "jackpot_usd": 154000000, "ev": -1.8142, "is_positive": false}, {"date": "2025-02-15", "jackpot_usd": 172000000, "ev": -1.7925, "is_positive": false}, {"date": "2025-02-17", "jackpot_usd": 183000000, "ev": -1.7792, "is_positive": false}, {"date": "2025-02-19", "jackpot_usd": 195000000, "ev": -1.7648, "is_positive": false}, {"date": "2025-02-22", "jackpot_usd": 215000000, "ev": -1.7406, "is_positive": false}, {"date": "2025-02-24", "jackpot_usd": 230000000, "ev": -1.7225, "is_positive": false}, {"date": "2025-02-26", "jackpot_usd": 248000000, "ev": -1.7008, "is_positive": false}, {"date": "2025-03-01", "jackpot_usd": 272000000, "ev": -1.6719, "is_positive": false}, {"date": "2025-03-03", "jackpot_usd": 279000000, "ev": -1.6634, "is_positive": false}, {"date": "2025-03-05", "jackpot_usd": 295000000, "ev": -1.6441, "is_positive": false}, {"date": "2025-03-08", "jackpot_usd": 320000000, "ev": -1.614, "is_positive": false}, {"date": "2025-03-10", "jackpot_usd": 335000000, "ev": -1.5959, "is_positive": false}, {"date": "2025-03-12", "jackpot_usd": 353000000, "ev": -1.5742, "is_positive": false}, {"date": "2025-03-15", "jackpot_usd": 378000000, "ev": -1.544, "is_positive": false}, {"date": "2025-03-17", "jackpot_usd": 398000000, "ev": -1.5199, "is_positive": false}, {"date": "2025-03-19", "jackpot_usd": 416000000, "ev": -1.4982, "is_positive": false}, {"date": "2025-03-22", "jackpot_usd": 444000000, "ev": -1.4644, "is_positive": false}, {"date": "2025-03-24", "jackpot_usd": 461000000, "ev": -1.4439, "is_positive": false}, {"date": "2025-03-26", "jackpot_usd": 484000000, "ev": -1.4161, "is_positive": false}, {"date": "2025-03-29", "jackpot_usd": 515000000, "ev": -1.3787, "is_positive": false}, {"date": "2025-03-31", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2025-04-02", "jackpot_usd": 30000000, "ev": -1.9638, "is_positive": false}, {"date": "2025-04-05", "jackpot_usd": 47000000, "ev": -1.9433, "is_positive": false}, {"date": "2025-04-07", "jackpot_usd": 54000000, "ev": -1.9349, "is_positive": false}, {"date": "2025-04-09", "jackpot_usd": 65000000, "ev": -1.9216, "is_positive": false}, {"date": "2025-04-12", "jackpot_usd": 82000000, "ev": -1.9011, "is_positive": false}, {"date": "2025-04-14", "jackpot_usd": 100000000, "ev": -1.8794, "is_positive": false}, {"date": "2025-04-16", "jackpot_usd": 113000000, "ev": -1.8637, "is_positive": false}, {"date": "2025-04-19", "jackpot_usd": 131000000, "ev": -1.842, "is_positive": false}, {"date": "2025-04-21", "jackpot_usd": 139000000, "ev": -1.8323, "is_positive": false}, {"date": "2025-04-23", "jackpot_usd": 151000000, "ev": -1.8178, "is_positive": false}, {"date": "2025-04-26", "jackpot_usd": 168000000, "ev": -1.7973, "is_positive": false}, {"date": "2025-04-28", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2025-04-30", "jackpot_usd": 30000000, "ev": -1.9638, "is_positive": false}, {"date": "2025-05-03", "jackpot_usd": 44000000, "ev": -1.9469, "is_positive": false}, {"date": "2025-05-05", "jackpot_usd": 54000000, "ev": -1.9349, "is_positive": false}, {"date": "2025-05-07", "jackpot_usd": 65000000, "ev": -1.9216, "is_positive": false}, {"date": "2025-05-10", "jackpot_usd": 82000000, "ev": -1.9011, "is_positive": false}, {"date": "2025-05-12", "jackpot_usd": 93000000, "ev": -1.8878, "is_positive": false}, {"date": "2025-05-14", "jackpot_usd": 106000000, "ev": -1.8721, "is_positive": false}, {"date": "2025-05-17", "jackpot_usd": 123000000, "ev": -1.8516, "is_positive": false}, {"date": "2025-05-19", "jackpot_usd": 134000000, "ev": -1.8383, "is_positive": false}, {"date": "2025-05-21", "jackpot_usd": 146000000, "ev": -1.8239, "is_positive": false}, {"date": "2025-05-24", "jackpot_usd": 163000000, "ev": -1.8034, "is_positive": false}, {"date": "2025-05-26", "jackpot_usd": 177000000, "ev": -1.7865, "is_positive": false}, {"date": "2025-05-28", "jackpot_usd": 189000000, "ev": -1.772, "is_positive": false}, {"date": "2025-05-31", "jackpot_usd": 207000000, "ev": -1.7503, "is_positive": false}, {"date": "2025-06-02", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2025-06-04", "jackpot_usd": 30000000, "ev": -1.9638, "is_positive": false}, {"date": "2025-06-07", "jackpot_usd": 44000000, "ev": -1.9469, "is_positive": false}, {"date": "2025-06-09", "jackpot_usd": 54000000, "ev": -1.9349, "is_positive": false}, {"date": "2025-06-11", "jackpot_usd": 65000000, "ev": -1.9216, "is_positive": false}, {"date": "2025-06-14", "jackpot_usd": 80000000, "ev": -1.9035, "is_positive": false}, {"date": "2025-06-16", "jackpot_usd": 90000000, "ev": -1.8914, "is_positive": false}, {"date": "2025-06-18", "jackpot_usd": 101000000, "ev": -1.8782, "is_positive": false}, {"date": "2025-06-21", "jackpot_usd": 118000000, "ev": -1.8576, "is_positive": false}, {"date": "2025-06-23", "jackpot_usd": 128000000, "ev": -1.8456, "is_positive": false}, {"date": "2025-06-25", "jackpot_usd": 140000000, "ev": -1.8311, "is_positive": false}, {"date": "2025-06-28", "jackpot_usd": 155000000, "ev": -1.813, "is_positive": false}, {"date": "2025-06-30", "jackpot_usd": 162000000, "ev": -1.8046, "is_positive": false}, {"date": "2025-07-02", "jackpot_usd": 174000000, "ev": -1.7901, "is_positive": false}, {"date": "2025-07-05", "jackpot_usd": 190000000, "ev": -1.7708, "is_positive": false}, {"date": "2025-07-07", "jackpot_usd": 203000000, "ev": -1.7551, "is_positive": false}, {"date": "2025-07-09", "jackpot_usd": 216000000, "ev": -1.7394, "is_positive": false}, {"date": "2025-07-12", "jackpot_usd": 234000000, "ev": -1.7177, "is_positive": false}, {"date": "2025-07-14", "jackpot_usd": 248000000, "ev": -1.7008, "is_positive": false}, {"date": "2025-07-16", "jackpot_usd": 264000000, "ev": -1.6815, "is_positive": false}, {"date": "2025-07-19", "jackpot_usd": 288000000, "ev": -1.6526, "is_positive": false}, {"date": "2025-07-21", "jackpot_usd": 308000000, "ev": -1.6284, "is_positive": false}, {"date": "2025-07-23", "jackpot_usd": 325000000, "ev": -1.6079, "is_positive": false}, {"date": "2025-07-26", "jackpot_usd": 350000000, "ev": -1.5778, "is_positive": false}, {"date": "2025-07-28", "jackpot_usd": 364000000, "ev": -1.5609, "is_positive": false}, {"date": "2025-07-30", "jackpot_usd": 384000000, "ev": -1.5368, "is_positive": false}, {"date": "2025-08-02", "jackpot_usd": 410000000, "ev": -1.5054, "is_positive": false}, {"date": "2025-08-04", "jackpot_usd": 426000000, "ev": -1.4861, "is_positive": false}, {"date": "2025-08-06", "jackpot_usd": 449000000, "ev": -1.4583, "is_positive": false}, {"date": "2025-08-09", "jackpot_usd": 482000000, "ev": -1.4185, "is_positive": false}, {"date": "2025-08-11", "jackpot_usd": 501000000, "ev": -1.3956, "is_positive": false}, {"date": "2025-08-13", "jackpot_usd": 526000000, "ev": -1.3655, "is_positive": false}, {"date": "2025-08-16", "jackpot_usd": 565000000, "ev": -1.3184, "is_positive": false}, {"date": "2025-08-18", "jackpot_usd": 605000000, "ev": -1.2702, "is_positive": false}, {"date": "2025-08-20", "jackpot_usd": 643000000, "ev": -1.2243, "is_positive": false}, {"date": "2025-08-23", "jackpot_usd": 700000000, "ev": -1.1555, "is_positive": false}, {"date": "2025-08-25", "jackpot_usd": 750000000, "ev": -1.0952, "is_positive": false}, {"date": "2025-08-27", "jackpot_usd": 850000000, "ev": -0.9746, "is_positive": false}, {"date": "2025-08-30", "jackpot_usd": 1000000000, "ev": -0.7936, "is_positive": false}, {"date": "2025-09-01", "jackpot_usd": 1100000000, "ev": -0.673, "is_positive": false}, {"date": "2025-09-03", "jackpot_usd": 1400000000, "ev": -0.3111, "is_positive": false}, {"date": "2025-09-06", "jackpot_usd": 1800000000, "ev": 0.1714, "is_positive": true}, {"date": "2025-09-08", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2025-09-10", "jackpot_usd": 33000000, "ev": -1.9602, "is_positive": false}, {"date": "2025-09-13", "jackpot_usd": 50000000, "ev": -1.9397, "is_positive": false}, {"date": "2025-09-15", "jackpot_usd": 64000000, "ev": -1.9228, "is_positive": false}, {"date": "2025-09-17", "jackpot_usd": 81000000, "ev": -1.9023, "is_positive": false}, {"date": "2025-09-20", "jackpot_usd": 99000000, "ev": -1.8806, "is_positive": false}, {"date": "2025-09-22", "jackpot_usd": 113000000, "ev": -1.8637, "is_positive": false}, {"date": "2025-09-24", "jackpot_usd": 127000000, "ev": -1.8468, "is_positive": false}, {"date": "2025-09-27", "jackpot_usd": 145000000, "ev": -1.8251, "is_positive": false}, {"date": "2025-09-29", "jackpot_usd": 160000000, "ev": -1.807, "is_positive": false}, {"date": "2025-10-01", "jackpot_usd": 174000000, "ev": -1.7901, "is_positive": false}, {"date": "2025-10-04", "jackpot_usd": 195000000, "ev": -1.7648, "is_positive": false}, {"date": "2025-10-06", "jackpot_usd": 207000000, "ev": -1.7503, "is_positive": false}, {"date": "2025-10-08", "jackpot_usd": 223000000, "ev": -1.731, "is_positive": false}, {"date": "2025-10-11", "jackpot_usd": 244000000, "ev": -1.7056, "is_positive": false}, {"date": "2025-10-13", "jackpot_usd": 258000000, "ev": -1.6888, "is_positive": false}, {"date": "2025-10-15", "jackpot_usd": 273000000, "ev": -1.6707, "is_positive": false}, {"date": "2025-10-18", "jackpot_usd": 295000000, "ev": -1.6441, "is_positive": false}, {"date": "2025-10-20", "jackpot_usd": 304000000, "ev": -1.6333, "is_positive": false}, {"date": "2025-10-22", "jackpot_usd": 320000000, "ev": -1.614, "is_positive": false}, {"date": "2025-10-25", "jackpot_usd": 344000000, "ev": -1.585, "is_positive": false}, {"date": "2025-10-27", "jackpot_usd": 358000000, "ev": -1.5681, "is_positive": false}, {"date": "2025-10-29", "jackpot_usd": 376000000, "ev": -1.5464, "is_positive": false}, {"date": "2025-11-01", "jackpot_usd": 400000000, "ev": -1.5175, "is_positive": false}, {"date": "2025-11-03", "jackpot_usd": 419000000, "ev": -1.4945, "is_positive": false}, {"date": "2025-11-05", "jackpot_usd": 438000000, "ev": -1.4716, "is_positive": false}, {"date": "2025-11-08", "jackpot_usd": 467000000, "ev": -1.4366, "is_positive": false}, {"date": "2025-11-10", "jackpot_usd": 490000000, "ev": -1.4089, "is_positive": false}, {"date": "2025-11-12", "jackpot_usd": 512000000, "ev": -1.3823, "is_positive": false}, {"date": "2025-11-15", "jackpot_usd": 546000000, "ev": -1.3413, "is_positive": false}, {"date": "2025-11-17", "jackpot_usd": 570000000, "ev": -1.3124, "is_positive": false}, {"date": "2025-11-19", "jackpot_usd": 593000000, "ev": -1.2846, "is_positive": false}, {"date": "2025-11-22", "jackpot_usd": 629000000, "ev": -1.2412, "is_positive": false}, {"date": "2025-11-24", "jackpot_usd": 654000000, "ev": -1.211, "is_positive": false}, {"date": "2025-11-26", "jackpot_usd": 681000000, "ev": -1.1785, "is_positive": false}, {"date": "2025-11-29", "jackpot_usd": 719000000, "ev": -1.1326, "is_positive": false}, {"date": "2025-12-01", "jackpot_usd": 740000000, "ev": -1.1073, "is_positive": false}, {"date": "2025-12-03", "jackpot_usd": 775000000, "ev": -1.0651, "is_positive": false}, {"date": "2025-12-06", "jackpot_usd": 820000000, "ev": -1.0108, "is_positive": false}, {"date": "2025-12-08", "jackpot_usd": 875000000, "ev": -0.9444, "is_positive": false}, {"date": "2025-12-10", "jackpot_usd": 930000000, "ev": -0.8781, "is_positive": false}, {"date": "2025-12-13", "jackpot_usd": 1000000000, "ev": -0.7936, "is_positive": false}, {"date": "2025-12-15", "jackpot_usd": 1100000000, "ev": -0.673, "is_positive": false}, {"date": "2025-12-17", "jackpot_usd": 1250000000, "ev": -0.4921, "is_positive": false}, {"date": "2025-12-20", "jackpot_usd": 1500000000, "ev": -0.1905, "is_positive": false}, {"date": "2025-12-22", "jackpot_usd": 1600000000, "ev": -0.0698, "is_positive": false}, {"date": "2025-12-24", "jackpot_usd": 1700000000, "ev": 0.0508, "is_positive": true}, {"date": "2025-12-27", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2025-12-29", "jackpot_usd": 33000000, "ev": -1.9602, "is_positive": false}, {"date": "2025-12-31", "jackpot_usd": 45000000, "ev": -1.9457, "is_positive": false}, {"date": "2026-01-03", "jackpot_usd": 64000000, "ev": -1.9228, "is_positive": false}, {"date": "2026-01-05", "jackpot_usd": 86000000, "ev": -1.8963, "is_positive": false}, {"date": "2026-01-07", "jackpot_usd": 105000000, "ev": -1.8733, "is_positive": false}, {"date": "2026-01-10", "jackpot_usd": 124000000, "ev": -1.8504, "is_positive": false}, {"date": "2026-01-12", "jackpot_usd": 137000000, "ev": -1.8347, "is_positive": false}, {"date": "2026-01-14", "jackpot_usd": 156000000, "ev": -1.8118, "is_positive": false}, {"date": "2026-01-17", "jackpot_usd": 179000000, "ev": -1.7841, "is_positive": false}, {"date": "2026-01-19", "jackpot_usd": 193000000, "ev": -1.7672, "is_positive": false}, {"date": "2026-01-21", "jackpot_usd": 209000000, "ev": -1.7479, "is_positive": false}, {"date": "2026-01-24", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2026-01-26", "jackpot_usd": 30000000, "ev": -1.9638, "is_positive": false}, {"date": "2026-01-28", "jackpot_usd": 43000000, "ev": -1.9481, "is_positive": false}, {"date": "2026-01-31", "jackpot_usd": 57000000, "ev": -1.9312, "is_positive": false}, {"date": "2026-02-02", "jackpot_usd": 65000000, "ev": -1.9216, "is_positive": false}, {"date": "2026-02-04", "jackpot_usd": 80000000, "ev": -1.9035, "is_positive": false}, {"date": "2026-02-07", "jackpot_usd": 102000000, "ev": -1.877, "is_positive": false}, {"date": "2026-02-09", "jackpot_usd": 113000000, "ev": -1.8637, "is_positive": false}, {"date": "2026-02-11", "jackpot_usd": 126000000, "ev": -1.848, "is_positive": false}, {"date": "2026-02-14", "jackpot_usd": 146000000, "ev": -1.8239, "is_positive": false}, {"date": "2026-02-16", "jackpot_usd": 154000000, "ev": -1.8142, "is_positive": false}, {"date": "2026-02-18", "jackpot_usd": 169000000, "ev": -1.7961, "is_positive": false}, {"date": "2026-02-21", "jackpot_usd": 190000000, "ev": -1.7708, "is_positive": false}, {"date": "2026-02-23", "jackpot_usd": 203000000, "ev": -1.7551, "is_positive": false}, {"date": "2026-02-25", "jackpot_usd": 218000000, "ev": -1.737, "is_positive": false}, {"date": "2026-02-28", "jackpot_usd": 238000000, "ev": -1.7129, "is_positive": false}, {"date": "2026-03-02", "jackpot_usd": 249000000, "ev": -1.6996, "is_positive": false}, {"date": "2026-03-04", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2026-03-07", "jackpot_usd": 35000000, "ev": -1.9578, "is_positive": false}, {"date": "2026-03-09", "jackpot_usd": 46000000, "ev": -1.9445, "is_positive": false}, {"date": "2026-03-11", "jackpot_usd": 58000000, "ev": -1.93, "is_positive": false}, {"date": "2026-03-14", "jackpot_usd": 75000000, "ev": -1.9095, "is_positive": false}, {"date": "2026-03-16", "jackpot_usd": 88000000, "ev": -1.8938, "is_positive": false}, {"date": "2026-03-18", "jackpot_usd": 101000000, "ev": -1.8782, "is_positive": false}, {"date": "2026-03-21", "jackpot_usd": 120000000, "ev": -1.8552, "is_positive": false}, {"date": "2026-03-23", "jackpot_usd": 133000000, "ev": -1.8396, "is_positive": false}, {"date": "2026-03-25", "jackpot_usd": 147000000, "ev": -1.8227, "is_positive": false}, {"date": "2026-03-28", "jackpot_usd": 166000000, "ev": -1.7997, "is_positive": false}, {"date": "2026-03-30", "jackpot_usd": 180000000, "ev": -1.7829, "is_positive": false}, {"date": "2026-04-01", "jackpot_usd": 194000000, "ev": -1.766, "is_positive": false}, {"date": "2026-04-04", "jackpot_usd": 217000000, "ev": -1.7382, "is_positive": false}, {"date": "2026-04-06", "jackpot_usd": 231000000, "ev": -1.7213, "is_positive": false}, {"date": "2026-04-08", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2026-04-11", "jackpot_usd": 35000000, "ev": -1.9578, "is_positive": false}, {"date": "2026-04-13", "jackpot_usd": 45000000, "ev": -1.9457, "is_positive": false}, {"date": "2026-04-15", "jackpot_usd": 58000000, "ev": -1.93, "is_positive": false}, {"date": "2026-04-18", "jackpot_usd": 75000000, "ev": -1.9095, "is_positive": false}, {"date": "2026-04-20", "jackpot_usd": 87000000, "ev": -1.895, "is_positive": false}, {"date": "2026-04-22", "jackpot_usd": 100000000, "ev": -1.8794, "is_positive": false}, {"date": "2026-04-25", "jackpot_usd": 118000000, "ev": -1.8576, "is_positive": false}, {"date": "2026-04-27", "jackpot_usd": 130000000, "ev": -1.8432, "is_positive": false}, {"date": "2026-04-29", "jackpot_usd": 143000000, "ev": -1.8275, "is_positive": false}, {"date": "2026-05-02", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2026-05-04", "jackpot_usd": 20000000, "ev": -1.9759, "is_positive": false}, {"date": "2026-05-06", "jackpot_usd": 30000000, "ev": -1.9638, "is_positive": false}, {"date": "2026-05-09", "jackpot_usd": 47000000, "ev": -1.9433, "is_positive": false}, {"date": "2026-05-11", "jackpot_usd": 57000000, "ev": -1.9312, "is_positive": false}], "odds_one_in": 292201338, "ticket_cost": 2.0, "net_rate": 0.3525, "positive_count": 2}}], "jackpot_trend": {"Classic Lotto 47": [{"date": "2025-01-01", "jackpot_usd": 1200000, "is_win": false}, {"date": "2025-01-04", "jackpot_usd": 1250000, "is_win": false}, {"date": "2025-01-08", "jackpot_usd": 1300000, "is_win": false}, {"date": "2025-01-11", "jackpot_usd": 1000000, "is_win": false}, {"date": "2025-01-15", "jackpot_usd": 1050000, "is_win": false}, {"date": "2025-01-18", "jackpot_usd": 1100000, "is_win": false}, {"date": "2025-01-22", "jackpot_usd": 1150000, "is_win": false}, {"date": "2025-01-25", "jackpot_usd": 1200000, "is_win": false}, {"date": "2025-01-29", "jackpot_usd": 1250000, "is_win": false}, {"date": "2025-02-01", "jackpot_usd": 1300000, "is_win": false}, {"date": "2025-02-05", "jackpot_usd": 1350000, "is_win": false}, {"date": "2025-02-08", "jackpot_usd": 1400000, "is_win": false}, {"date": "2025-02-12", "jackpot_usd": 1450000, "is_win": false}, {"date": "2025-02-15", "jackpot_usd": 1550000, "is_win": false}, {"date": "2025-02-19", "jackpot_usd": 1750000, "is_win": false}, {"date": "2025-02-22", "jackpot_usd": 1900000, "is_win": false}, {"date": "2025-02-26", "jackpot_usd": 2050000, "is_win": false}, {"date": "2025-03-01", "jackpot_usd": 2200000, "is_win": false}, {"date": "2025-03-05", "jackpot_usd": 2400000, "is_win": false}, {"date": "2025-03-08", "jackpot_usd": 2600000, "is_win": false}, {"date": "2025-03-12", "jackpot_usd": 2750000, "is_win": false}, {"date": "2025-03-15", "jackpot_usd": 2950000, "is_win": false}, {"date": "2025-03-19", "jackpot_usd": 3150000, "is_win": false}, {"date": "2025-03-22", "jackpot_usd": 3350000, "is_win": false}, {"date": "2025-03-26", "jackpot_usd": 3550000, "is_win": false}, {"date": "2025-03-29", "jackpot_usd": 3750000, "is_win": false}, {"date": "2025-04-02", "jackpot_usd": 4000000, "is_win": false}, {"date": "2025-04-05", "jackpot_usd": 4200000, "is_win": false}, {"date": "2025-04-09", "jackpot_usd": 4450000, "is_win": false}, {"date": "2025-04-12", "jackpot_usd": 4700000, "is_win": false}, {"date": "2025-04-16", "jackpot_usd": 4900000, "is_win": false}, {"date": "2025-04-19", "jackpot_usd": 5150000, "is_win": false}, {"date": "2025-04-23", "jackpot_usd": 5400000, "is_win": true}, {"date": "2025-04-26", "jackpot_usd": 1000000, "is_win": false}, {"date": "2025-04-30", "jackpot_usd": 1050000, "is_win": false}, {"date": "2025-05-03", "jackpot_usd": 1100000, "is_win": false}, {"date": "2025-05-07", "jackpot_usd": 1150000, "is_win": false}, {"date": "2025-05-10", "jackpot_usd": 1200000, "is_win": false}, {"date": "2025-05-14", "jackpot_usd": 1250000, "is_win": false}, {"date": "2025-05-17", "jackpot_usd": 1300000, "is_win": false}, {"date": "2025-05-21", "jackpot_usd": 1350000, "is_win": false}, {"date": "2025-05-24", "jackpot_usd": 1400000, "is_win": false}, {"date": "2025-05-28", "jackpot_usd": 1450000, "is_win": false}, {"date": "2025-05-31", "jackpot_usd": 1650000, "is_win": false}, {"date": "2025-06-04", "jackpot_usd": 1800000, "is_win": false}, {"date": "2025-06-07", "jackpot_usd": 1950000, "is_win": false}, {"date": "2025-06-11", "jackpot_usd": 2150000, "is_win": false}, {"date": "2025-06-14", "jackpot_usd": 2350000, "is_win": false}, {"date": "2025-06-18", "jackpot_usd": 2500000, "is_win": false}, {"date": "2025-06-21", "jackpot_usd": 2700000, "is_win": false}, {"date": "2025-06-25", "jackpot_usd": 2900000, "is_win": false}, {"date": "2025-06-28", "jackpot_usd": 3050000, "is_win": false}, {"date": "2025-07-02", "jackpot_usd": 3250000, "is_win": false}, {"date": "2025-07-05", "jackpot_usd": 3450000, "is_win": false}, {"date": "2025-07-09", "jackpot_usd": 3650000, "is_win": false}, {"date": "2025-07-12", "jackpot_usd": 3900000, "is_win": false}, {"date": "2025-07-16", "jackpot_usd": 4100000, "is_win": false}, {"date": "2025-07-19", "jackpot_usd": 4350000, "is_win": false}, {"date": "2025-07-23", "jackpot_usd": 4650000, "is_win": false}, {"date": "2025-07-26", "jackpot_usd": 4900000, "is_win": false}, {"date": "2025-07-30", "jackpot_usd": 5200000, "is_win": false}, {"date": "2025-08-02", "jackpot_usd": 5450000, "is_win": false}, {"date": "2025-08-06", "jackpot_usd": 5750000, "is_win": false}, {"date": "2025-08-09", "jackpot_usd": 6050000, "is_win": false}, {"date": "2025-08-13", "jackpot_usd": 6350000, "is_win": false}, {"date": "2025-08-16", "jackpot_usd": 6750000, "is_win": false}, {"date": "2025-08-20", "jackpot_usd": 7050000, "is_win": false}, {"date": "2025-08-23", "jackpot_usd": 7300000, "is_win": false}, {"date": "2025-08-27", "jackpot_usd": 7700000, "is_win": false}, {"date": "2025-08-30", "jackpot_usd": 8100000, "is_win": false}, {"date": "2025-09-03", "jackpot_usd": 8500000, "is_win": false}, {"date": "2025-09-06", "jackpot_usd": 8900000, "is_win": false}, {"date": "2025-09-10", "jackpot_usd": 9450000, "is_win": false}, {"date": "2025-09-13", "jackpot_usd": 9950000, "is_win": false}, {"date": "2025-09-17", "jackpot_usd": 10450000, "is_win": false}, {"date": "2025-09-20", "jackpot_usd": 11000000, "is_win": false}, {"date": "2025-09-24", "jackpot_usd": 11550000, "is_win": false}, {"date": "2025-09-27", "jackpot_usd": 12100000, "is_win": false}, {"date": "2025-10-01", "jackpot_usd": 12650000, "is_win": false}, {"date": "2025-10-04", "jackpot_usd": 13150000, "is_win": false}, {"date": "2025-10-08", "jackpot_usd": 13700000, "is_win": false}, {"date": "2025-10-11", "jackpot_usd": 14300000, "is_win": false}, {"date": "2025-10-15", "jackpot_usd": 14900000, "is_win": false}, {"date": "2025-10-18", "jackpot_usd": 15400000, "is_win": false}, {"date": "2025-10-22", "jackpot_usd": 16000000, "is_win": false}, {"date": "2025-10-25", "jackpot_usd": 16550000, "is_win": false}, {"date": "2025-10-29", "jackpot_usd": 17150000, "is_win": false}, {"date": "2025-11-01", "jackpot_usd": 17750000, "is_win": false}, {"date": "2025-11-05", "jackpot_usd": 18400000, "is_win": false}, {"date": "2025-11-08", "jackpot_usd": 19000000, "is_win": false}, {"date": "2025-11-12", "jackpot_usd": 19650000, "is_win": false}, {"date": "2025-11-15", "jackpot_usd": 20300000, "is_win": false}, {"date": "2025-11-19", "jackpot_usd": 20950000, "is_win": false}, {"date": "2025-11-22", "jackpot_usd": 21650000, "is_win": false}, {"date": "2025-11-26", "jackpot_usd": 22300000, "is_win": false}, {"date": "2025-11-29", "jackpot_usd": 22900000, "is_win": false}, {"date": "2025-12-03", "jackpot_usd": 23600000, "is_win": false}, {"date": "2025-12-06", "jackpot_usd": 24600000, "is_win": false}, {"date": "2025-12-10", "jackpot_usd": 27350000, "is_win": false}, {"date": "2025-12-13", "jackpot_usd": 29800000, "is_win": true}, {"date": "2025-12-17", "jackpot_usd": 1000000, "is_win": false}, {"date": "2025-12-20", "jackpot_usd": 1050000, "is_win": false}, {"date": "2025-12-24", "jackpot_usd": 1100000, "is_win": false}, {"date": "2025-12-27", "jackpot_usd": 1150000, "is_win": false}, {"date": "2025-12-31", "jackpot_usd": 1200000, "is_win": false}, {"date": "2026-01-03", "jackpot_usd": 1250000, "is_win": false}, {"date": "2026-01-07", "jackpot_usd": 1350000, "is_win": false}, {"date": "2026-01-10", "jackpot_usd": 1500000, "is_win": false}, {"date": "2026-01-14", "jackpot_usd": 1700000, "is_win": false}, {"date": "2026-01-17", "jackpot_usd": 1900000, "is_win": false}, {"date": "2026-01-21", "jackpot_usd": 2050000, "is_win": false}, {"date": "2026-01-24", "jackpot_usd": 2250000, "is_win": false}, {"date": "2026-01-28", "jackpot_usd": 2450000, "is_win": false}, {"date": "2026-01-31", "jackpot_usd": 2650000, "is_win": false}, {"date": "2026-02-04", "jackpot_usd": 2850000, "is_win": false}, {"date": "2026-02-07", "jackpot_usd": 3050000, "is_win": false}, {"date": "2026-02-11", "jackpot_usd": 3250000, "is_win": false}, {"date": "2026-02-14", "jackpot_usd": 3500000, "is_win": false}, {"date": "2026-02-18", "jackpot_usd": 3700000, "is_win": false}, {"date": "2026-02-21", "jackpot_usd": 3950000, "is_win": true}, {"date": "2026-02-25", "jackpot_usd": 1000000, "is_win": false}, {"date": "2026-02-28", "jackpot_usd": 1050000, "is_win": false}, {"date": "2026-03-04", "jackpot_usd": 1100000, "is_win": false}, {"date": "2026-03-07", "jackpot_usd": 1150000, "is_win": false}, {"date": "2026-03-11", "jackpot_usd": 1200000, "is_win": false}, {"date": "2026-03-14", "jackpot_usd": 1000000, "is_win": false}, {"date": "2026-03-18", "jackpot_usd": 1050000, "is_win": false}, {"date": "2026-03-21", "jackpot_usd": 1100000, "is_win": false}, {"date": "2026-03-25", "jackpot_usd": 1000000, "is_win": false}, {"date": "2026-03-28", "jackpot_usd": 1050000, "is_win": false}, {"date": "2026-04-01", "jackpot_usd": 1100000, "is_win": false}, {"date": "2026-04-04", "jackpot_usd": 1150000, "is_win": false}, {"date": "2026-04-08", "jackpot_usd": 1200000, "is_win": false}, {"date": "2026-04-11", "jackpot_usd": 1250000, "is_win": false}, {"date": "2026-04-15", "jackpot_usd": 1300000, "is_win": false}, {"date": "2026-04-18", "jackpot_usd": 1350000, "is_win": false}, {"date": "2026-04-22", "jackpot_usd": 1450000, "is_win": false}, {"date": "2026-04-25", "jackpot_usd": 1650000, "is_win": true}, {"date": "2026-04-29", "jackpot_usd": 1000000, "is_win": false}, {"date": "2026-05-02", "jackpot_usd": 1050000, "is_win": false}, {"date": "2026-05-06", "jackpot_usd": 1100000, "is_win": false}, {"date": "2026-05-09", "jackpot_usd": 1150000, "is_win": false}], "Mega Millions": [{"date": "2025-01-03", "jackpot_usd": 42000000, "is_win": false}, {"date": "2025-01-07", "jackpot_usd": 62000000, "is_win": false}, {"date": "2025-01-10", "jackpot_usd": 77000000, "is_win": false}, {"date": "2025-01-14", "jackpot_usd": 95000000, "is_win": false}, {"date": "2025-01-17", "jackpot_usd": 113000000, "is_win": true}, {"date": "2025-01-21", "jackpot_usd": 20000000, "is_win": false}, {"date": "2025-01-24", "jackpot_usd": 28000000, "is_win": false}, {"date": "2025-01-28", "jackpot_usd": 44000000, "is_win": false}, {"date": "2025-01-31", "jackpot_usd": 59000000, "is_win": false}, {"date": "2025-02-04", "jackpot_usd": 77000000, "is_win": false}, {"date": "2025-02-07", "jackpot_usd": 94000000, "is_win": false}, {"date": "2025-02-11", "jackpot_usd": 110000000, "is_win": false}, {"date": "2025-02-14", "jackpot_usd": 129000000, "is_win": false}, {"date": "2025-02-18", "jackpot_usd": 145000000, "is_win": false}, {"date": "2025-02-21", "jackpot_usd": 165000000, "is_win": false}, {"date": "2025-02-25", "jackpot_usd": 181000000, "is_win": false}, {"date": "2025-02-28", "jackpot_usd": 197000000, "is_win": false}, {"date": "2025-03-04", "jackpot_usd": 215000000, "is_win": false}, {"date": "2025-03-07", "jackpot_usd": 233000000, "is_win": false}, {"date": "2025-03-11", "jackpot_usd": 256000000, "is_win": false}, {"date": "2025-03-14", "jackpot_usd": 277000000, "is_win": false}, {"date": "2025-03-18", "jackpot_usd": 301000000, "is_win": false}, {"date": "2025-03-21", "jackpot_usd": 324000000, "is_win": false}, {"date": "2025-03-25", "jackpot_usd": 344000000, "is_win": true}, {"date": "2025-03-28", "jackpot_usd": 20000000, "is_win": false}, {"date": "2025-04-01", "jackpot_usd": 29000000, "is_win": false}, {"date": "2025-04-04", "jackpot_usd": 43000000, "is_win": false}, {"date": "2025-04-08", "jackpot_usd": 54000000, "is_win": false}, {"date": "2025-04-11", "jackpot_usd": 72000000, "is_win": false}, {"date": "2025-04-15", "jackpot_usd": 96000000, "is_win": false}, {"date": "2025-04-18", "jackpot_usd": 112000000, "is_win": true}, {"date": "2025-04-22", "jackpot_usd": 50000000, "is_win": false}, {"date": "2025-04-25", "jackpot_usd": 60000000, "is_win": false}, {"date": "2025-04-29", "jackpot_usd": 70000000, "is_win": false}, {"date": "2025-05-02", "jackpot_usd": 80000000, "is_win": false}, {"date": "2025-05-06", "jackpot_usd": 90000000, "is_win": false}, {"date": "2025-05-09", "jackpot_usd": 100000000, "is_win": false}, {"date": "2025-05-13", "jackpot_usd": 110000000, "is_win": false}, {"date": "2025-05-16", "jackpot_usd": 122000000, "is_win": false}, {"date": "2025-05-20", "jackpot_usd": 139000000, "is_win": false}, {"date": "2025-05-23", "jackpot_usd": 154000000, "is_win": false}, {"date": "2025-05-27", "jackpot_usd": 173000000, "is_win": false}, {"date": "2025-05-30", "jackpot_usd": 189000000, "is_win": false}, {"date": "2025-06-03", "jackpot_usd": 202000000, "is_win": false}, {"date": "2025-06-06", "jackpot_usd": 223000000, "is_win": false}, {"date": "2025-06-10", "jackpot_usd": 243000000, "is_win": false}, {"date": "2025-06-13", "jackpot_usd": 264000000, "is_win": false}, {"date": "2025-06-17", "jackpot_usd": 280000000, "is_win": false}, {"date": "2025-06-20", "jackpot_usd": 302000000, "is_win": false}, {"date": "2025-06-24", "jackpot_usd": 326000000, "is_win": false}, {"date": "2025-06-27", "jackpot_usd": 348000000, "is_win": true}, {"date": "2025-07-01", "jackpot_usd": 50000000, "is_win": false}, {"date": "2025-07-04", "jackpot_usd": 60000000, "is_win": false}, {"date": "2025-07-08", "jackpot_usd": 70000000, "is_win": false}, {"date": "2025-07-11", "jackpot_usd": 80000000, "is_win": false}, {"date": "2025-07-15", "jackpot_usd": 90000000, "is_win": false}, {"date": "2025-07-18", "jackpot_usd": 100000000, "is_win": false}, {"date": "2025-07-22", "jackpot_usd": 110000000, "is_win": false}, {"date": "2025-07-25", "jackpot_usd": 120000000, "is_win": false}, {"date": "2025-07-29", "jackpot_usd": 130000000, "is_win": false}, {"date": "2025-08-01", "jackpot_usd": 140000000, "is_win": false}, {"date": "2025-08-05", "jackpot_usd": 150000000, "is_win": false}, {"date": "2025-08-08", "jackpot_usd": 166000000, "is_win": false}, {"date": "2025-08-12", "jackpot_usd": 182000000, "is_win": false}, {"date": "2025-08-15", "jackpot_usd": 198000000, "is_win": false}, {"date": "2025-08-19", "jackpot_usd": 216000000, "is_win": false}, {"date": "2025-08-22", "jackpot_usd": 234000000, "is_win": false}, {"date": "2025-08-26", "jackpot_usd": 253000000, "is_win": false}, {"date": "2025-08-29", "jackpot_usd": 277000000, "is_win": false}, {"date": "2025-09-02", "jackpot_usd": 302000000, "is_win": false}, {"date": "2025-09-05", "jackpot_usd": 336000000, "is_win": false}, {"date": "2025-09-09", "jackpot_usd": 358000000, "is_win": false}, {"date": "2025-09-12", "jackpot_usd": 381000000, "is_win": false}, {"date": "2025-09-16", "jackpot_usd": 400000000, "is_win": false}, {"date": "2025-09-19", "jackpot_usd": 423000000, "is_win": false}, {"date": "2025-09-23", "jackpot_usd": 451000000, "is_win": false}, {"date": "2025-09-26", "jackpot_usd": 474000000, "is_win": false}, {"date": "2025-09-30", "jackpot_usd": 497000000, "is_win": false}, {"date": "2025-10-03", "jackpot_usd": 520000000, "is_win": false}, {"date": "2025-10-07", "jackpot_usd": 547000000, "is_win": false}, {"date": "2025-10-10", "jackpot_usd": 575000000, "is_win": false}, {"date": "2025-10-14", "jackpot_usd": 600000000, "is_win": false}, {"date": "2025-10-17", "jackpot_usd": 625000000, "is_win": false}, {"date": "2025-10-21", "jackpot_usd": 650000000, "is_win": false}, {"date": "2025-10-24", "jackpot_usd": 680000000, "is_win": false}, {"date": "2025-10-28", "jackpot_usd": 714000000, "is_win": false}, {"date": "2025-10-31", "jackpot_usd": 754000000, "is_win": false}, {"date": "2025-11-04", "jackpot_usd": 800000000, "is_win": false}, {"date": "2025-11-07", "jackpot_usd": 843000000, "is_win": false}, {"date": "2025-11-11", "jackpot_usd": 900000000, "is_win": false}, {"date": "2025-11-14", "jackpot_usd": 980000000, "is_win": true}, {"date": "2025-11-18", "jackpot_usd": 50000000, "is_win": false}, {"date": "2025-11-21", "jackpot_usd": 60000000, "is_win": false}, {"date": "2025-11-25", "jackpot_usd": 70000000, "is_win": false}, {"date": "2025-11-28", "jackpot_usd": 80000000, "is_win": false}, {"date": "2025-12-02", "jackpot_usd": 90000000, "is_win": true}, {"date": "2025-12-05", "jackpot_usd": 50000000, "is_win": false}, {"date": "2025-12-09", "jackpot_usd": 60000000, "is_win": false}, {"date": "2025-12-12", "jackpot_usd": 70000000, "is_win": false}, {"date": "2025-12-16", "jackpot_usd": 80000000, "is_win": false}, {"date": "2025-12-19", "jackpot_usd": 90000000, "is_win": false}, {"date": "2025-12-23", "jackpot_usd": 100000000, "is_win": false}, {"date": "2025-12-26", "jackpot_usd": 125000000, "is_win": false}, {"date": "2025-12-30", "jackpot_usd": 138000000, "is_win": false}, {"date": "2026-01-02", "jackpot_usd": 157000000, "is_win": false}, {"date": "2026-01-06", "jackpot_usd": 180000000, "is_win": false}, {"date": "2026-01-09", "jackpot_usd": 199000000, "is_win": false}, {"date": "2026-01-13", "jackpot_usd": 215000000, "is_win": false}, {"date": "2026-01-16", "jackpot_usd": 230000000, "is_win": false}, {"date": "2026-01-20", "jackpot_usd": 250000000, "is_win": false}, {"date": "2026-01-23", "jackpot_usd": 266000000, "is_win": false}, {"date": "2026-01-27", "jackpot_usd": 285000000, "is_win": false}, {"date": "2026-01-30", "jackpot_usd": 303000000, "is_win": false}, {"date": "2026-02-03", "jackpot_usd": 323000000, "is_win": false}, {"date": "2026-02-06", "jackpot_usd": 346000000, "is_win": false}, {"date": "2026-02-10", "jackpot_usd": 366000000, "is_win": false}, {"date": "2026-02-13", "jackpot_usd": 385000000, "is_win": false}, {"date": "2026-02-17", "jackpot_usd": 395000000, "is_win": false}, {"date": "2026-02-20", "jackpot_usd": 416000000, "is_win": false}, {"date": "2026-02-24", "jackpot_usd": 438000000, "is_win": false}, {"date": "2026-02-27", "jackpot_usd": 458000000, "is_win": false}, {"date": "2026-03-03", "jackpot_usd": 473000000, "is_win": false}, {"date": "2026-03-06", "jackpot_usd": 496000000, "is_win": false}, {"date": "2026-03-10", "jackpot_usd": 533000000, "is_win": true}, {"date": "2026-03-13", "jackpot_usd": 50000000, "is_win": false}, {"date": "2026-03-17", "jackpot_usd": 60000000, "is_win": false}, {"date": "2026-03-20", "jackpot_usd": 50000000, "is_win": false}, {"date": "2026-03-24", "jackpot_usd": 60000000, "is_win": false}, {"date": "2026-03-27", "jackpot_usd": 70000000, "is_win": false}, {"date": "2026-03-31", "jackpot_usd": 80000000, "is_win": false}, {"date": "2026-04-03", "jackpot_usd": 90000000, "is_win": false}, {"date": "2026-04-07", "jackpot_usd": 100000000, "is_win": false}, {"date": "2026-04-10", "jackpot_usd": 110000000, "is_win": false}, {"date": "2026-04-14", "jackpot_usd": 120000000, "is_win": false}, {"date": "2026-04-17", "jackpot_usd": 130000000, "is_win": false}, {"date": "2026-04-21", "jackpot_usd": 140000000, "is_win": false}, {"date": "2026-04-24", "jackpot_usd": 150000000, "is_win": false}, {"date": "2026-04-28", "jackpot_usd": 163000000, "is_win": false}, {"date": "2026-05-01", "jackpot_usd": 178000000, "is_win": false}, {"date": "2026-05-05", "jackpot_usd": 195000000, "is_win": false}, {"date": "2026-05-08", "jackpot_usd": 215000000, "is_win": false}, {"date": "2026-05-12", "jackpot_usd": 232000000, "is_win": false}], "Powerball": [{"date": "2025-01-01", "jackpot_usd": 178000000, "is_win": false}, {"date": "2025-01-04", "jackpot_usd": 200000000, "is_win": false}, {"date": "2025-01-06", "jackpot_usd": 220000000, "is_win": false}, {"date": "2025-01-08", "jackpot_usd": 240000000, "is_win": false}, {"date": "2025-01-11", "jackpot_usd": 263000000, "is_win": false}, {"date": "2025-01-13", "jackpot_usd": 285000000, "is_win": false}, {"date": "2025-01-15", "jackpot_usd": 303000000, "is_win": false}, {"date": "2025-01-18", "jackpot_usd": 331000000, "is_win": true}, {"date": "2025-01-20", "jackpot_usd": 20000000, "is_win": false}, {"date": "2025-01-22", "jackpot_usd": 31000000, "is_win": false}, {"date": "2025-01-25", "jackpot_usd": 46000000, "is_win": false}, {"date": "2025-01-27", "jackpot_usd": 56000000, "is_win": false}, {"date": "2025-01-29", "jackpot_usd": 69000000, "is_win": false}, {"date": "2025-02-01", "jackpot_usd": 89000000, "is_win": false}, {"date": "2025-02-03", "jackpot_usd": 100000000, "is_win": false}, {"date": "2025-02-05", "jackpot_usd": 113000000, "is_win": false}, {"date": "2025-02-08", "jackpot_usd": 133000000, "is_win": false}, {"date": "2025-02-10", "jackpot_usd": 142000000, "is_win": false}, {"date": "2025-02-12", "jackpot_usd": 154000000, "is_win": false}, {"date": "2025-02-15", "jackpot_usd": 172000000, "is_win": false}, {"date": "2025-02-17", "jackpot_usd": 183000000, "is_win": false}, {"date": "2025-02-19", "jackpot_usd": 195000000, "is_win": false}, {"date": "2025-02-22", "jackpot_usd": 215000000, "is_win": false}, {"date": "2025-02-24", "jackpot_usd": 230000000, "is_win": false}, {"date": "2025-02-26", "jackpot_usd": 248000000, "is_win": false}, {"date": "2025-03-01", "jackpot_usd": 272000000, "is_win": false}, {"date": "2025-03-03", "jackpot_usd": 279000000, "is_win": false}, {"date": "2025-03-05", "jackpot_usd": 295000000, "is_win": false}, {"date": "2025-03-08", "jackpot_usd": 320000000, "is_win": false}, {"date": "2025-03-10", "jackpot_usd": 335000000, "is_win": false}, {"date": "2025-03-12", "jackpot_usd": 353000000, "is_win": false}, {"date": "2025-03-15", "jackpot_usd": 378000000, "is_win": false}, {"date": "2025-03-17", "jackpot_usd": 398000000, "is_win": false}, {"date": "2025-03-19", "jackpot_usd": 416000000, "is_win": false}, {"date": "2025-03-22", "jackpot_usd": 444000000, "is_win": false}, {"date": "2025-03-24", "jackpot_usd": 461000000, "is_win": false}, {"date": "2025-03-26", "jackpot_usd": 484000000, "is_win": false}, {"date": "2025-03-29", "jackpot_usd": 515000000, "is_win": true}, {"date": "2025-03-31", "jackpot_usd": 20000000, "is_win": false}, {"date": "2025-04-02", "jackpot_usd": 30000000, "is_win": false}, {"date": "2025-04-05", "jackpot_usd": 47000000, "is_win": false}, {"date": "2025-04-07", "jackpot_usd": 54000000, "is_win": false}, {"date": "2025-04-09", "jackpot_usd": 65000000, "is_win": false}, {"date": "2025-04-12", "jackpot_usd": 82000000, "is_win": false}, {"date": "2025-04-14", "jackpot_usd": 100000000, "is_win": false}, {"date": "2025-04-16", "jackpot_usd": 113000000, "is_win": false}, {"date": "2025-04-19", "jackpot_usd": 131000000, "is_win": false}, {"date": "2025-04-21", "jackpot_usd": 139000000, "is_win": false}, {"date": "2025-04-23", "jackpot_usd": 151000000, "is_win": false}, {"date": "2025-04-26", "jackpot_usd": 168000000, "is_win": true}, {"date": "2025-04-28", "jackpot_usd": 20000000, "is_win": false}, {"date": "2025-04-30", "jackpot_usd": 30000000, "is_win": false}, {"date": "2025-05-03", "jackpot_usd": 44000000, "is_win": false}, {"date": "2025-05-05", "jackpot_usd": 54000000, "is_win": false}, {"date": "2025-05-07", "jackpot_usd": 65000000, "is_win": false}, {"date": "2025-05-10", "jackpot_usd": 82000000, "is_win": false}, {"date": "2025-05-12", "jackpot_usd": 93000000, "is_win": false}, {"date": "2025-05-14", "jackpot_usd": 106000000, "is_win": false}, {"date": "2025-05-17", "jackpot_usd": 123000000, "is_win": false}, {"date": "2025-05-19", "jackpot_usd": 134000000, "is_win": false}, {"date": "2025-05-21", "jackpot_usd": 146000000, "is_win": false}, {"date": "2025-05-24", "jackpot_usd": 163000000, "is_win": false}, {"date": "2025-05-26", "jackpot_usd": 177000000, "is_win": false}, {"date": "2025-05-28", "jackpot_usd": 189000000, "is_win": false}, {"date": "2025-05-31", "jackpot_usd": 207000000, "is_win": true}, {"date": "2025-06-02", "jackpot_usd": 20000000, "is_win": false}, {"date": "2025-06-04", "jackpot_usd": 30000000, "is_win": false}, {"date": "2025-06-07", "jackpot_usd": 44000000, "is_win": false}, {"date": "2025-06-09", "jackpot_usd": 54000000, "is_win": false}, {"date": "2025-06-11", "jackpot_usd": 65000000, "is_win": false}, {"date": "2025-06-14", "jackpot_usd": 80000000, "is_win": false}, {"date": "2025-06-16", "jackpot_usd": 90000000, "is_win": false}, {"date": "2025-06-18", "jackpot_usd": 101000000, "is_win": false}, {"date": "2025-06-21", "jackpot_usd": 118000000, "is_win": false}, {"date": "2025-06-23", "jackpot_usd": 128000000, "is_win": false}, {"date": "2025-06-25", "jackpot_usd": 140000000, "is_win": false}, {"date": "2025-06-28", "jackpot_usd": 155000000, "is_win": false}, {"date": "2025-06-30", "jackpot_usd": 162000000, "is_win": false}, {"date": "2025-07-02", "jackpot_usd": 174000000, "is_win": false}, {"date": "2025-07-05", "jackpot_usd": 190000000, "is_win": false}, {"date": "2025-07-07", "jackpot_usd": 203000000, "is_win": false}, {"date": "2025-07-09", "jackpot_usd": 216000000, "is_win": false}, {"date": "2025-07-12", "jackpot_usd": 234000000, "is_win": false}, {"date": "2025-07-14", "jackpot_usd": 248000000, "is_win": false}, {"date": "2025-07-16", "jackpot_usd": 264000000, "is_win": false}, {"date": "2025-07-19", "jackpot_usd": 288000000, "is_win": false}, {"date": "2025-07-21", "jackpot_usd": 308000000, "is_win": false}, {"date": "2025-07-23", "jackpot_usd": 325000000, "is_win": false}, {"date": "2025-07-26", "jackpot_usd": 350000000, "is_win": false}, {"date": "2025-07-28", "jackpot_usd": 364000000, "is_win": false}, {"date": "2025-07-30", "jackpot_usd": 384000000, "is_win": false}, {"date": "2025-08-02", "jackpot_usd": 410000000, "is_win": false}, {"date": "2025-08-04", "jackpot_usd": 426000000, "is_win": false}, {"date": "2025-08-06", "jackpot_usd": 449000000, "is_win": false}, {"date": "2025-08-09", "jackpot_usd": 482000000, "is_win": false}, {"date": "2025-08-11", "jackpot_usd": 501000000, "is_win": false}, {"date": "2025-08-13", "jackpot_usd": 526000000, "is_win": false}, {"date": "2025-08-16", "jackpot_usd": 565000000, "is_win": false}, {"date": "2025-08-18", "jackpot_usd": 605000000, "is_win": false}, {"date": "2025-08-20", "jackpot_usd": 643000000, "is_win": false}, {"date": "2025-08-23", "jackpot_usd": 700000000, "is_win": false}, {"date": "2025-08-25", "jackpot_usd": 750000000, "is_win": false}, {"date": "2025-08-27", "jackpot_usd": 850000000, "is_win": false}, {"date": "2025-08-30", "jackpot_usd": 1000000000, "is_win": false}, {"date": "2025-09-01", "jackpot_usd": 1100000000, "is_win": false}, {"date": "2025-09-03", "jackpot_usd": 1400000000, "is_win": false}, {"date": "2025-09-06", "jackpot_usd": 1800000000, "is_win": true}, {"date": "2025-09-08", "jackpot_usd": 20000000, "is_win": false}, {"date": "2025-09-10", "jackpot_usd": 33000000, "is_win": false}, {"date": "2025-09-13", "jackpot_usd": 50000000, "is_win": false}, {"date": "2025-09-15", "jackpot_usd": 64000000, "is_win": false}, {"date": "2025-09-17", "jackpot_usd": 81000000, "is_win": false}, {"date": "2025-09-20", "jackpot_usd": 99000000, "is_win": false}, {"date": "2025-09-22", "jackpot_usd": 113000000, "is_win": false}, {"date": "2025-09-24", "jackpot_usd": 127000000, "is_win": false}, {"date": "2025-09-27", "jackpot_usd": 145000000, "is_win": false}, {"date": "2025-09-29", "jackpot_usd": 160000000, "is_win": false}, {"date": "2025-10-01", "jackpot_usd": 174000000, "is_win": false}, {"date": "2025-10-04", "jackpot_usd": 195000000, "is_win": false}, {"date": "2025-10-06", "jackpot_usd": 207000000, "is_win": false}, {"date": "2025-10-08", "jackpot_usd": 223000000, "is_win": false}, {"date": "2025-10-11", "jackpot_usd": 244000000, "is_win": false}, {"date": "2025-10-13", "jackpot_usd": 258000000, "is_win": false}, {"date": "2025-10-15", "jackpot_usd": 273000000, "is_win": false}, {"date": "2025-10-18", "jackpot_usd": 295000000, "is_win": false}, {"date": "2025-10-20", "jackpot_usd": 304000000, "is_win": false}, {"date": "2025-10-22", "jackpot_usd": 320000000, "is_win": false}, {"date": "2025-10-25", "jackpot_usd": 344000000, "is_win": false}, {"date": "2025-10-27", "jackpot_usd": 358000000, "is_win": false}, {"date": "2025-10-29", "jackpot_usd": 376000000, "is_win": false}, {"date": "2025-11-01", "jackpot_usd": 400000000, "is_win": false}, {"date": "2025-11-03", "jackpot_usd": 419000000, "is_win": false}, {"date": "2025-11-05", "jackpot_usd": 438000000, "is_win": false}, {"date": "2025-11-08", "jackpot_usd": 467000000, "is_win": false}, {"date": "2025-11-10", "jackpot_usd": 490000000, "is_win": false}, {"date": "2025-11-12", "jackpot_usd": 512000000, "is_win": false}, {"date": "2025-11-15", "jackpot_usd": 546000000, "is_win": false}, {"date": "2025-11-17", "jackpot_usd": 570000000, "is_win": false}, {"date": "2025-11-19", "jackpot_usd": 593000000, "is_win": false}, {"date": "2025-11-22", "jackpot_usd": 629000000, "is_win": false}, {"date": "2025-11-24", "jackpot_usd": 654000000, "is_win": false}, {"date": "2025-11-26", "jackpot_usd": 681000000, "is_win": false}, {"date": "2025-11-29", "jackpot_usd": 719000000, "is_win": false}, {"date": "2025-12-01", "jackpot_usd": 740000000, "is_win": false}, {"date": "2025-12-03", "jackpot_usd": 775000000, "is_win": false}, {"date": "2025-12-06", "jackpot_usd": 820000000, "is_win": false}, {"date": "2025-12-08", "jackpot_usd": 875000000, "is_win": false}, {"date": "2025-12-10", "jackpot_usd": 930000000, "is_win": false}, {"date": "2025-12-13", "jackpot_usd": 1000000000, "is_win": false}, {"date": "2025-12-15", "jackpot_usd": 1100000000, "is_win": false}, {"date": "2025-12-17", "jackpot_usd": 1250000000, "is_win": false}, {"date": "2025-12-20", "jackpot_usd": 1500000000, "is_win": false}, {"date": "2025-12-22", "jackpot_usd": 1600000000, "is_win": false}, {"date": "2025-12-24", "jackpot_usd": 1700000000, "is_win": true}, {"date": "2025-12-27", "jackpot_usd": 20000000, "is_win": false}, {"date": "2025-12-29", "jackpot_usd": 33000000, "is_win": false}, {"date": "2025-12-31", "jackpot_usd": 45000000, "is_win": false}, {"date": "2026-01-03", "jackpot_usd": 64000000, "is_win": false}, {"date": "2026-01-05", "jackpot_usd": 86000000, "is_win": false}, {"date": "2026-01-07", "jackpot_usd": 105000000, "is_win": false}, {"date": "2026-01-10", "jackpot_usd": 124000000, "is_win": false}, {"date": "2026-01-12", "jackpot_usd": 137000000, "is_win": false}, {"date": "2026-01-14", "jackpot_usd": 156000000, "is_win": false}, {"date": "2026-01-17", "jackpot_usd": 179000000, "is_win": false}, {"date": "2026-01-19", "jackpot_usd": 193000000, "is_win": false}, {"date": "2026-01-21", "jackpot_usd": 209000000, "is_win": true}, {"date": "2026-01-24", "jackpot_usd": 20000000, "is_win": false}, {"date": "2026-01-26", "jackpot_usd": 30000000, "is_win": false}, {"date": "2026-01-28", "jackpot_usd": 43000000, "is_win": false}, {"date": "2026-01-31", "jackpot_usd": 57000000, "is_win": false}, {"date": "2026-02-02", "jackpot_usd": 65000000, "is_win": false}, {"date": "2026-02-04", "jackpot_usd": 80000000, "is_win": false}, {"date": "2026-02-07", "jackpot_usd": 102000000, "is_win": false}, {"date": "2026-02-09", "jackpot_usd": 113000000, "is_win": false}, {"date": "2026-02-11", "jackpot_usd": 126000000, "is_win": false}, {"date": "2026-02-14", "jackpot_usd": 146000000, "is_win": false}, {"date": "2026-02-16", "jackpot_usd": 154000000, "is_win": false}, {"date": "2026-02-18", "jackpot_usd": 169000000, "is_win": false}, {"date": "2026-02-21", "jackpot_usd": 190000000, "is_win": false}, {"date": "2026-02-23", "jackpot_usd": 203000000, "is_win": false}, {"date": "2026-02-25", "jackpot_usd": 218000000, "is_win": false}, {"date": "2026-02-28", "jackpot_usd": 238000000, "is_win": false}, {"date": "2026-03-02", "jackpot_usd": 249000000, "is_win": true}, {"date": "2026-03-04", "jackpot_usd": 20000000, "is_win": false}, {"date": "2026-03-07", "jackpot_usd": 35000000, "is_win": false}, {"date": "2026-03-09", "jackpot_usd": 46000000, "is_win": false}, {"date": "2026-03-11", "jackpot_usd": 58000000, "is_win": false}, {"date": "2026-03-14", "jackpot_usd": 75000000, "is_win": false}, {"date": "2026-03-16", "jackpot_usd": 88000000, "is_win": false}, {"date": "2026-03-18", "jackpot_usd": 101000000, "is_win": false}, {"date": "2026-03-21", "jackpot_usd": 120000000, "is_win": false}, {"date": "2026-03-23", "jackpot_usd": 133000000, "is_win": false}, {"date": "2026-03-25", "jackpot_usd": 147000000, "is_win": false}, {"date": "2026-03-28", "jackpot_usd": 166000000, "is_win": false}, {"date": "2026-03-30", "jackpot_usd": 180000000, "is_win": false}, {"date": "2026-04-01", "jackpot_usd": 194000000, "is_win": false}, {"date": "2026-04-04", "jackpot_usd": 217000000, "is_win": false}, {"date": "2026-04-06", "jackpot_usd": 231000000, "is_win": true}, {"date": "2026-04-08", "jackpot_usd": 20000000, "is_win": false}, {"date": "2026-04-11", "jackpot_usd": 35000000, "is_win": false}, {"date": "2026-04-13", "jackpot_usd": 45000000, "is_win": false}, {"date": "2026-04-15", "jackpot_usd": 58000000, "is_win": false}, {"date": "2026-04-18", "jackpot_usd": 75000000, "is_win": false}, {"date": "2026-04-20", "jackpot_usd": 87000000, "is_win": false}, {"date": "2026-04-22", "jackpot_usd": 100000000, "is_win": false}, {"date": "2026-04-25", "jackpot_usd": 118000000, "is_win": false}, {"date": "2026-04-27", "jackpot_usd": 130000000, "is_win": false}, {"date": "2026-04-29", "jackpot_usd": 143000000, "is_win": true}, {"date": "2026-05-02", "jackpot_usd": 20000000, "is_win": false}, {"date": "2026-05-04", "jackpot_usd": 20000000, "is_win": false}, {"date": "2026-05-06", "jackpot_usd": 30000000, "is_win": false}, {"date": "2026-05-09", "jackpot_usd": 47000000, "is_win": false}, {"date": "2026-05-11", "jackpot_usd": 57000000, "is_win": false}]}};
+
+// ----- Renderers --------------------------------------------------------
+function fmt(n) { return new Intl.NumberFormat('en-US').format(n); }
+function fmtUSD(n) {
+  if (!n) return '—';
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+  return '$' + n;
+}
+
+function renderBalls(nums, bonus, bonusLabel) {
+  let html = '<div class="balls">';
+  nums.forEach(n => html += `<span class="ball">${n}</span>`);
+  if (bonus != null) {
+    html += `<span class="label-inline">${bonusLabel}</span>`;
+    html += `<span class="ball bonus">${bonus}</span>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderRecommended(picks) {
+  let html = '<div class="balls">';
+  picks.forEach(n => html += `<span class="ball recommend">${n}</span>`);
+  html += '</div>';
+  return html;
+}
+
+function renderGameSection(g) {
+  if (!g.available) {
+    return `<div class="game-section"><h2>${g.display}</h2><div class="unavailable">No data file found. Run UpdateData first.</div></div>`;
+  }
+
+  const latest = g.latest_record;
+  const bonusVal = g.bonus_field ? latest[g.bonus_field] : null;
+
+  let cards = '';
+  const mainRange = `1–${g.main_max}`;
+  const bonusDesc = g.bonus_label ? `, ${g.bonus_label} 1–${g.bonus_max}` : '';
+
+  // Calculate worthiness
+  let worthiness = { status: 'UNKNOWN', color: '#8a93a0', note: 'No EV data' };
+  if (g.ev) {
+    const last_ev_data = g.ev.history.length ? g.ev.history[g.ev.history.length-1] : null;
+    if (last_ev_data) {
+      const isWorthIt = last_ev_data.ev > 0;
+      worthiness = {
+        status: isWorthIt ? 'WORTH IT (+EV)' : 'NOT WORTH IT (-EV)',
+        color: isWorthIt ? '#06d6a0' : '#ef476f',
+        note: isWorthIt ? 'Jackpot offsets the odds!' : `Math says wait for ${fmtUSD(g.ev.break_even_usd)}+`
+      };
+    }
+  } else if (g.key === 'millionaire-for-life') {
+    worthiness = { 
+      status: 'PERMANENT -EV', 
+      color: '#ef476f', 
+      note: 'Math says wait for $14.2M+ (capped)' 
+    };
+  }
+
+  cards += `<div class="stat-card" style="border-left-color: ${worthiness.color}"><div class="label">Play Status</div><div class="value" style="color: ${worthiness.color}">${worthiness.status}</div><div class="secondary">${worthiness.note}</div></div>`;
+  cards += `<div class="stat-card"><div class="label">Ticket Cost</div><div class="value">$${g.ticket_cost.toFixed(2)}</div><div class="secondary">${g.main_count} main ${mainRange}${bonusDesc}</div></div>`;
+  cards += `<div class="stat-card"><div class="label">Total Draws</div><div class="value">${fmt(g.total_draws)}</div><div class="secondary">${g.first_date} → ${g.last_date}</div></div>`;
+  cards += `<div class="stat-card"><div class="label">Sum Range</div><div class="value">${g.sum_min}–${g.sum_max}</div><div class="secondary">avg ${g.sum_avg}</div></div>`;
+  cards += `<div class="stat-card"><div class="label">In 32+ Zone</div><div class="value">${(g.unpopular.avg_fraction_32plus * 100).toFixed(1)}%</div><div class="secondary">${g.unpopular.draws_all_32plus} all-high draws</div></div>`;
+  
+  if (g.ev) {
+    cards += `<div class="stat-card"><div class="label">Break-Even Jackpot</div><div class="value">${fmtUSD(g.ev.break_even_usd)}</div><div class="secondary">odds 1 in ${fmt(g.ev.odds_one_in)}</div></div>`;
+  }
+
+  let html = `
+    <div class="game-section" id="section-${g.key}">
+      <h2>${g.display}</h2>
+      <h3>Latest Draw — ${latest.date}</h3>
+      ${renderBalls(latest.numbers, bonusVal, g.bonus_label)}
+      ${latest.jackpot_usd ? `<div class="note">Jackpot: ${fmtUSD(latest.jackpot_usd)}${latest.powerplay ? ' · Power Play ' + latest.powerplay + 'x' : ''}</div>` : ''}
+
+      <h3>Summary</h3>
+      <div class="summary-grid">${cards}</div>
+
+      <h3>Suggested Unpopular Picks (heuristic only)</h3>
+      ${renderRecommended(g.recommended_picks)}
+      <div class="note">Picks favor the 32+ zone with reasonable historical frequency. This does NOT raise win odds — it only reduces the chance of splitting the jackpot with calendar-date players.</div>
+
+      <h3>Smart Number Generator</h3>
+      <div class="generator-wrap">
+        <div class="gen-grid">
+          ${Array.from({length: g.main_count}).map((_, i) => `
+            <div class="gen-field">
+              <label>Ball ${i+1}</label>
+              <input type="number" class="ball-input-${g.key}" placeholder="?" min="1" max="${g.main_max}" oninput="handleManualInput(this)">
+            </div>
+          `).join('')}
+          ${g.bonus_label ? `
+            <div class="gen-field">
+              <label>${g.bonus_label}</label>
+              <input type="number" id="bonus-input-${g.key}" placeholder="?" min="1" max="${g.bonus_max}" oninput="handleManualInput(this)">
+            </div>
+          ` : ''}
+          <div class="gen-field">
+            <label>Target Sum (Main)</label>
+            <input type="number" id="sum-input-${g.key}" class="wide" placeholder="Optional">
+          </div>
+          <label class="gen-check">
+            <input type="checkbox" id="unpopular-check-${g.key}" checked>
+            Favor 32+ Zone
+          </label>
+          <button class="gen-btn" onclick="doGenerate('${g.key}')">Generate</button>
+        </div>
+        <div id="gen-error-${g.key}" class="gen-error"></div>
+      </div>
+
+      <h3>Main Ball Frequency</h3>
+      <div class="chart-wrap tall"><canvas id="freq-${g.key}"></canvas></div>
+
+      ${g.bonus_frequency ? `
+      <h3>${g.bonus_label} Frequency</h3>
+      <div class="chart-wrap"><canvas id="bonusfreq-${g.key}"></canvas></div>
+      ` : ''}
+
+      <h3>Sum Distribution (main balls only)</h3>
+      <div class="chart-wrap"><canvas id="sums-${g.key}"></canvas></div>
+
+      <h3>Longest Gaps (top 20 numbers not drawn lately)</h3>
+      <table class="gap-table">
+        <thead><tr><th>Number</th><th>Last Drawn</th><th>Draws Since</th></tr></thead>
+        <tbody>
+          ${g.gap_analysis.map(row => `<tr><td>${row.number}</td><td>${row.last_date}</td><td>${row.draws_since}</td></tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="note">Reminder: a "long gap" does NOT mean a number is due. Each draw is independent.</div>
+    </div>
+  `;
+  return html;
+}
+
+function renderAll() {
+  const container = document.getElementById('game-sections');
+  container.innerHTML = DATA.games.map(renderGameSection).join('');
+
+  DATA.games.forEach(g => {
+    if (!g.available) return;
+    renderFrequencyChart('freq-' + g.key, g.frequency, g.main_max, g.total_draws, true);
+    if (g.bonus_frequency) {
+      renderFrequencyChart('bonusfreq-' + g.key, g.bonus_frequency, g.bonus_max, g.total_draws, false);
+    }
+    renderSumsChart(g);
+  });
+
+  renderJackpotTrend('major', ['Mega Millions', 'Powerball']);
+  renderJackpotTrend('classic', ['Classic Lotto 47']);
+}
+
+// HSL gradient: cold slate → muted steel → olive → ochre → brick
+function heatColor(t) {
+  const stops = [
+    { t: 0.00, h: 210, s: 30, l: 35 }, // Cold Slate
+    { t: 0.25, h: 200, s: 35, l: 45 }, // Muted Steel
+    { t: 0.50, h:  60, s: 40, l: 50 }, // Olive
+    { t: 0.75, h:  35, s: 50, l: 45 }, // Ochre
+    { t: 1.00, h:   5, s: 50, l: 45 }, // Brick
+  ];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (t <= stops[i+1].t) {
+      const span = stops[i+1].t - stops[i].t;
+      const f = span === 0 ? 0 : (t - stops[i].t) / span;
+      const h = stops[i].h + (stops[i+1].h - stops[i].h) * f;
+      const s = stops[i].s + (stops[i+1].s - stops[i].s) * f;
+      const l = stops[i].l + (stops[i+1].l - stops[i].l) * f;
+      return `hsl(${h.toFixed(0)}, ${s.toFixed(0)}%, ${l.toFixed(0)}%)`;
+    }
+  }
+  return 'hsl(5, 50%, 45%)';
+}
+
+const chartCommon = {
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { ticks: { color: '#8a93a0' }, grid: { color: '#252d38' } },
+    y: { ticks: { color: '#8a93a0' }, grid: { color: '#252d38' } }
+  },
+  maintainAspectRatio: false,
+  responsive: true,
+};
+
+function renderFrequencyChart(canvasId, freq, maxNum, totalDraws, markUnpopular) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const nums = Object.keys(freq).map(Number).sort((a,b) => a-b);
+  const counts = nums.map(n => freq[n]);
+  const maxCount = Math.max(...counts);
+  const minCount = Math.min(...counts);
+  const span = Math.max(1, maxCount - minCount);
+  const colors = nums.map(n => heatColor((freq[n] - minCount) / span));
+  const borderColors = nums.map(n => (markUnpopular && n >= 32) ? '#4ea386' : 'transparent');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: nums,
+      datasets: [{
+        data: counts,
+        backgroundColor: colors,
+        borderColor: borderColors,
+        borderWidth: nums.map(n => (markUnpopular && n >= 32) ? 2 : 0)
+      }]
+    },
+    options: {
+      ...chartCommon,
+      plugins: {
+        ...chartCommon.plugins,
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ` Drawn ${ctx.raw}× (${(ctx.raw / totalDraws * 100).toFixed(1)}%)`
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderSumsChart(g) {
+  const ctx = document.getElementById('sums-' + g.key).getContext('2d');
+  const sums = g.sum_distribution;
+  const min = g.sum_min, max = g.sum_max;
+  const bucketSize = Math.max(1, Math.round((max - min) / 20));
+  const buckets = {};
+  for (let i = min; i <= max; i += bucketSize) { buckets[i] = 0; }
+  sums.forEach(s => {
+    const b = Math.floor((s - min) / bucketSize) * bucketSize + min;
+    buckets[b] = (buckets[b] || 0) + 1;
+  });
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(buckets),
+      datasets: [{ label: 'Draws', data: Object.values(buckets), backgroundColor: '#6d8ead' }]
+    },
+    options: { ...chartCommon, plugins: { ...chartCommon.plugins, title: { display: true, text: 'Sum Distribution', color: '#8a93a0' } } }
+  });
+}
+
+const TREND_COLORS = {
+  'Mega Millions':    { line: '#dbaf56', win: '#d64550' },
+  'Powerball':        { line: '#6d8ead', win: '#d64550' },
+  'Classic Lotto 47': { line: '#4ea386', win: '#d64550' },
+};
+
+function renderJackpotTrend(canvasSuffix, gameNames) {
+  const canvas = document.getElementById('jackpot-' + canvasSuffix);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const datasets = [];
+  gameNames.forEach(name => {
+    const history = DATA.jackpot_trend[name];
+    if (!history) return;
+    const palette = TREND_COLORS[name] || { line: '#8ecae6', win: '#ef476f' };
+    datasets.push({
+      label: name,
+      data: history.map(h => ({ x: new Date(h.date).getTime(), y: h.jackpot_usd })),
+      borderColor: palette.line,
+      backgroundColor: palette.line + '22',
+      borderWidth: 2,
+      tension: 0.15,
+      pointRadius: history.map(h => h.is_win ? 5 : 1.5),
+      pointBackgroundColor: history.map(h => h.is_win ? palette.win : palette.line),
+    });
+  });
+  new Chart(ctx, {
+    type: 'line',
+    data: { datasets: datasets },
+    options: {
+      ...chartCommon,
+      plugins: {
+        ...chartCommon.plugins,
+        legend: { display: true, labels: { color: '#e8e8e8' } },
+        tooltip: {
+          callbacks: {
+            title: (items) => {
+              const d = new Date(items[0].parsed.x);
+              return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            },
+            label: (ctx) => {
+              const h = DATA.jackpot_trend[ctx.dataset.label][ctx.dataIndex];
+              const win = h.is_win ? '  💥 JACKPOT WON' : '';
+              return `${ctx.dataset.label}: $${(h.jackpot_usd/1e6).toFixed(0)}M${win}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          ticks: {
+            color: '#8a93a0',
+            maxTicksLimit: 12,
+            callback: (val) => {
+              const d = new Date(val);
+              return (d.getMonth() + 1) + '/' + d.getDate();
+            }
+          },
+          grid: { color: '#2a3441' }
+        },
+        y: { ticks: { color: '#8a93a0', callback: v => '$' + (v >= 1e9 ? (v/1e9).toFixed(1)+'B' : (v/1e6).toFixed(0)+'M') }, grid: { color: '#2a3441' } }
+      }
+    }
+  });
+}
+
+function handleManualInput(el) {
+  if (el.value) {
+    el.classList.add('manual');
+    el.classList.remove('generated');
+  } else {
+    el.classList.remove('manual', 'generated');
+  }
+}
+
+function doGenerate(gameKey) {
+  const g = DATA.games.find(x => x.key === gameKey);
+  const errorEl = document.getElementById(`gen-error-${gameKey}`);
+  errorEl.textContent = '';
+
+  const inputs = document.querySelectorAll(`.ball-input-${gameKey}`);
+  const bonusInput = document.getElementById(`bonus-input-${gameKey}`);
+  const sumInput = document.getElementById(`sum-input-${gameKey}`);
+  const unpopularCheck = document.getElementById(`unpopular-check-${gameKey}`);
+
+  const manualValues = new Set();
+  const locked = [];
+  inputs.forEach(i => {
+    const val = parseInt(i.value);
+    if (!isNaN(val)) {
+      if (i.classList.contains('manual')) manualValues.add(val);
+      locked.push(val);
+    }
+  });
+
+  const targetSum = parseInt(sumInput.value);
+  const useUnpopular = unpopularCheck.checked;
+
+  if (new Set(locked).size !== locked.length) {
+    errorEl.textContent = 'Duplicate numbers locked.'; return;
+  }
+  if (locked.some(n => n < 1 || n > g.main_max)) {
+    errorEl.textContent = `Numbers must be between 1 and ${g.main_max}.`; return;
+  }
+
+  const pool = [];
+  for (let i = 1; i <= g.main_max; i++) {
+    if (!locked.includes(i)) pool.push(i);
+  }
+
+  let bestSet = null;
+  let attempts = 5000;
+
+  while (attempts-- > 0) {
+    const current = [...locked];
+    const available = [...pool];
+    const remainingCount = g.main_count - locked.length;
+    
+    for (let i = 0; i < remainingCount; i++) {
+      let idx;
+      const high = available.filter(n => n >= 32);
+      if (useUnpopular && high.length > 0 && Math.random() < 0.7) {
+        idx = available.indexOf(high[Math.floor(Math.random() * high.length)]);
+      } else {
+        idx = Math.floor(Math.random() * available.length);
+      }
+      current.push(available.splice(idx, 1)[0]);
+    }
+
+    current.sort((a, b) => a - b);
+    const currentSum = current.reduce((a, b) => a + b, 0);
+
+    if (isNaN(targetSum) || currentSum === targetSum) {
+      bestSet = current;
+      break;
+    }
+  }
+
+  if (!bestSet) {
+    errorEl.textContent = 'Could not find a set matching target sum after 5000 tries.';
+    return;
+  }
+
+  inputs.forEach((input, i) => {
+    const val = bestSet[i];
+    input.value = val;
+    if (manualValues.has(val)) {
+      input.classList.add('manual');
+      input.classList.remove('generated');
+    } else {
+      input.classList.add('generated');
+      input.classList.remove('manual');
+    }
+  });
+
+  if (bonusInput) {
+    const bVal = parseInt(bonusInput.value);
+    if (isNaN(bVal)) {
+      bonusInput.value = Math.floor(Math.random() * g.bonus_max) + 1;
+      bonusInput.classList.add('generated');
+      bonusInput.classList.remove('manual');
+    } else {
+      bonusInput.classList.add('manual');
+      bonusInput.classList.remove('generated');
+    }
+  }
+}
+
+renderAll();
+</script>
+
+</body>
+</html>

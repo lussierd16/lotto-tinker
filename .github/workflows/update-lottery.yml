@@ -1,0 +1,41 @@
+name: Daily Lottery Update
+
+on:
+  schedule:
+    # Runs at 10:00 UTC (6:00 AM EST) every day
+    - cron: '0 10 * * *'
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to push data updates
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          # If you have a requirements.txt, uncomment below:
+          # pip install -r requirements.txt
+          # Otherwise, install requests if needed for the scraper:
+          pip install requests
+
+      - name: Update Data and Build Dashboard
+        run: |
+          # The unified script handles both fetching and building
+          python3 BuildDashboard.py --fetch --output-dir .
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add dashboard.html *.json *.csv
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated data & dashboard update" && git push)
