@@ -37,7 +37,7 @@ This project is designed to be as lightweight and portable as possible.
 
 *   **Data Layer:** Python 3 (Standard Library only — no `pip` dependencies required).
 *   **API:** Michigan Lottery Public GraphQL (`https://www.michiganlottery.com/api`).
-*   **Frontend:** A single, self-contained `dashboard.html` file using Vanilla JavaScript and [Chart.js](https://www.chartjs.org/) (via CDN).
+*   **Frontend:** A single, self-contained `index.html` file using Vanilla JavaScript and [Chart.js](https://www.chartjs.org/) (via CDN).
 *   **Automation:** GitHub Actions (`.github/workflows/update-lottery.yml`).
 *   **Hosting:** Cloudflare Pages (Static Site).
 

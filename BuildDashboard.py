@@ -462,7 +462,7 @@ def main():
     html = html.replace("{{TIMESTAMP}}", datetime.now().strftime("%Y-%m-%d %H:%M"))
     html = html.replace("{{TOTAL_DRAWS}}", str(total_draws))
     
-    with open(os.path.join(args.output_dir, "dashboard.html"), "w") as f:
+    with open(os.path.join(args.output_dir, "index.html"), "w") as f:
         f.write(html)
     print("Dashboard build complete.")
 
