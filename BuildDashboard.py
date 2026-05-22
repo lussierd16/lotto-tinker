@@ -49,6 +49,14 @@ GAMES = [
         "bonus_max": 26,
         "ticket_cost": 2.0,
         "odds": 292201338
+    },
+    {
+        "key": "daily-keno",
+        "display": "Daily Keno",
+        "gameTypeId": 14,
+        "main_max": 80,
+        "main_count": 22,
+        "ticket_cost": 1.0,
     }
 ]
 
@@ -198,32 +206,40 @@ def build_stats(game_config, records):
         reverse=True
     )[:game_config['main_count']]
 
-    # EV Analysis
-    ev_history = []
-    pos_count = 0
-    break_even = game_config['ticket_cost'] * game_config['odds'] / NET_RATE
+    # EV Analysis — only for games with defined odds
+    ev_data = None
+    if game_config.get('odds') and game_config['key'] != "millionaire-for-life":
+        ev_history = []
+        pos_count = 0
+        break_even = game_config['ticket_cost'] * game_config['odds'] / NET_RATE
 
-    for r in records:
-        if r['jackpot_usd']:
-            net = r['jackpot_usd'] * NET_RATE
-            ev = (net / game_config['odds']) - game_config['ticket_cost']
-            is_pos = ev > 0
-            if is_pos:
-                pos_count += 1
-            ev_history.append({
-                "date": r['date'],
-                "jackpot_usd": r['jackpot_usd'],
-                "ev": ev,
-                "is_positive": is_pos,
-                "is_win": False  # filled in below
-            })
+        for r in records:
+            if r['jackpot_usd']:
+                net = r['jackpot_usd'] * NET_RATE
+                ev = (net / game_config['odds']) - game_config['ticket_cost']
+                is_pos = ev > 0
+                if is_pos:
+                    pos_count += 1
+                ev_history.append({
+                    "date": r['date'],
+                    "jackpot_usd": r['jackpot_usd'],
+                    "ev": ev,
+                    "is_positive": is_pos,
+                    "is_win": False
+                })
 
-    # Detect jackpot wins: if next draw's jackpot drops by more than 50%, this draw was a winner
-    for i in range(len(ev_history) - 1):
-        curr_j = ev_history[i]['jackpot_usd']
-        next_j = ev_history[i + 1]['jackpot_usd']
-        if curr_j and next_j and next_j < curr_j * 0.5:
-            ev_history[i]['is_win'] = True
+        for i in range(len(ev_history) - 1):
+            curr_j = ev_history[i]['jackpot_usd']
+            next_j = ev_history[i + 1]['jackpot_usd']
+            if curr_j and next_j and next_j < curr_j * 0.5:
+                ev_history[i]['is_win'] = True
+
+        ev_data = {
+            "break_even_usd": int(break_even),
+            "history": ev_history,
+            "odds_one_in": game_config['odds'],
+            "positive_count": pos_count
+        }
 
     return {
         "available": True,
@@ -251,12 +267,7 @@ def build_stats(game_config, records):
             "draws_all_32plus": unpopular_count
         },
         "recommended_picks": sorted(rec),
-        "ev": {
-            "break_even_usd": int(break_even),
-            "history": ev_history,
-            "odds_one_in": game_config['odds'],
-            "positive_count": pos_count
-        } if game_config['key'] != "millionaire-for-life" else None
+        "ev": ev_data
     }
 
 
