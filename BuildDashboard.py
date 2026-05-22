@@ -9,15 +9,12 @@ from datetime import datetime
 # --- Configuration & Odds ---
 GAMES = [
     {
-        "key": "millionaire-for-life",
-        "display": "Millionaire for Life",
-        "gameTypeId": 20,
-        "main_max": 58,
-        "main_count": 5,
-        "bonus_label": "Millionaire Ball",
-        "bonus_max": 5,
-        "ticket_cost": 5.0,
-        "odds": 22910580
+        "key": "daily-keno",
+        "display": "Daily Keno",
+        "gameTypeId": 14,
+        "main_max": 80,
+        "main_count": 22,
+        "ticket_cost": 1.0,
     },
     {
         "key": "classic-lotto-47",
@@ -51,12 +48,15 @@ GAMES = [
         "odds": 292201338
     },
     {
-        "key": "daily-keno",
-        "display": "Daily Keno",
-        "gameTypeId": 14,
-        "main_max": 80,
-        "main_count": 22,
-        "ticket_cost": 1.0,
+        "key": "millionaire-for-life",
+        "display": "Millionaire for Life",
+        "gameTypeId": 20,
+        "main_max": 58,
+        "main_count": 5,
+        "bonus_label": "Millionaire Ball",
+        "bonus_max": 5,
+        "ticket_cost": 5.0,
+        "odds": 22910580
     }
 ]
 
