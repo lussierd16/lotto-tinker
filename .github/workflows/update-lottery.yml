@@ -6,6 +6,9 @@ on:
     - cron: '0 10 * * *'
   workflow_dispatch: # Allows manual trigger
 
+permissions:
+  contents: read
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
@@ -14,28 +17,29 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
+      - name: Update data and build dashboard
+        shell: bash
         run: |
-          # If you have a requirements.txt, uncomment below:
-          # pip install -r requirements.txt
-          # Otherwise, install requests if needed for the scraper:
-          pip install requests
-
-      - name: Update Data and Build Dashboard
-        run: |
-          # The unified script handles both fetching and building
+          set -euo pipefail
           python3 BuildDashboard.py --fetch --output-dir .
 
-      - name: Commit and Push Changes
+      - name: Commit and push changes
+        shell: bash
         run: |
+          set -euo pipefail
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add index.html *.json *.csv
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated data & dashboard update" && git push)
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Automated data & dashboard update"
+          git push
