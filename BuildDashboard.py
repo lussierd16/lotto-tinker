@@ -9,11 +9,11 @@ from datetime import datetime
 # --- Configuration & Odds ---
 GAMES = [
     {
-        "key": "daily-keno",
-        "display": "Daily Keno",
-        "gameTypeId": 14,
+        "key": "club-keno",
+        "display": "Club Keno",
+        "gameTypeId": 13,
         "main_max": 80,
-        "main_count": 22,
+        "main_count": 20,
         "ticket_cost": 1.0,
     },
     {
@@ -197,7 +197,7 @@ def build_stats(game_config, records):
          for n, d in draws_since.items()],
         key=lambda x: x['draws_since'],
         reverse=True
-    )[:20]
+    )[:5]
 
     # Recommended: top main_count numbers from 32+ zone by frequency
     rec = sorted(
