@@ -9,7 +9,7 @@
 
 <hr />
 
-## 🎯 The "Money Tinker" Philosophy
+## 🎯 The "Lotto Tinker" Philosophy
 
 Most people play the lottery based on dates, dreams, or "lucky" numbers. This project treats the lottery strictly as a mathematical variable-reward system.
 
@@ -47,12 +47,13 @@ This project is designed to be as lightweight and portable as possible.
 
 | Game | Ticket Cost | Odds (1 in...) | EV Status |
 | :--- | :--- | :--- | :--- |
+| **Club Keno** | $1.00+ | N/A (parimutuel) | N/A — EV depends on spots played |
+| **Classic Lotto 47** | $1.00 | 10,737,573 | Dynamic (+EV only at ~$30M+) |
 | **Mega Millions** | $5.00 | 302,575,350 | Dynamic (+EV only at ~$4.1B+) |
 | **Powerball** | $2.00 | 292,201,338 | Dynamic (+EV only at ~$1.6B+) |
-| **Classic Lotto 47** | $1.00 | 10,737,573 | Dynamic (+EV only at ~$30M+) |
 | **Millionaire for Life**| $5.00 | 22,910,580 | **Permanent -EV** (Capped Prize) |
 
-*(Note: Mega Millions pricing reflects the 2025/2026 $5.00 ticket structure).*
+*(Note: Mega Millions pricing reflects the 2025/2026 $5.00 ticket structure. Club Keno draws 20 numbers from 1–80 every ~3.5 minutes; one draw per day is sampled for stats.)*
 
 ---
 
@@ -77,3 +78,13 @@ Your site will now automatically update itself every day.
 ## ⚠️ Disclaimer
 
 This project is for educational and statistical purposes only. The Michigan Lottery is a game of chance. This dashboard does not guarantee winnings, nor does it provide financial advice. Please play responsibly.
+
+---
+
+## 🤖 A Note on How This Was Built
+
+The overwhelming majority of this project — was written by [Claude](https://claude.ai) (Anthropic's AI), operating through a personal AI infrastructure layer called [PAI](https://github.com/danielmiessler/Personal_AI_Infrastructure).
+
+My role was mostly directing: identifying interesting public APIs worth exploring, deciding how the data should be presented, and making the key architecture calls around automation, hosting, and tooling.
+
+I'm a Senior Cloud Consultant with 20+ years in IT — cloud infrastructure, Terraform, DevOps, CI/CD pipelines. That background turns out to be useful in steering Claude toward the right architecture rather than just accepting whatever it produces. The interesting challenge isn't whether AI can write the code — it clearly can — it's learning how to collaborate with it effectively enough that the output reflects real judgment, not just plausible-looking output. That's what I'm actually practicing.
