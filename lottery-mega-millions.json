@@ -1713,7 +1713,7 @@
       61
     ],
     "bonus": 3,
-    "jackpot_usd": null,
+    "jackpot_usd": 251000000,
     "powerplay": null
   },
   {
@@ -1726,7 +1726,7 @@
       64
     ],
     "bonus": 6,
-    "jackpot_usd": null,
+    "jackpot_usd": 277000000,
     "powerplay": null
   },
   {
@@ -1739,7 +1739,7 @@
       61
     ],
     "bonus": 8,
-    "jackpot_usd": null,
+    "jackpot_usd": 296000000,
     "powerplay": null
   },
   {
@@ -1752,7 +1752,7 @@
       59
     ],
     "bonus": 7,
-    "jackpot_usd": null,
+    "jackpot_usd": 311000000,
     "powerplay": null
   },
   {
@@ -1765,7 +1765,7 @@
       65
     ],
     "bonus": 7,
-    "jackpot_usd": null,
+    "jackpot_usd": 331000000,
     "powerplay": null
   },
   {
@@ -1778,7 +1778,7 @@
       60
     ],
     "bonus": 12,
-    "jackpot_usd": null,
+    "jackpot_usd": 346000000,
     "powerplay": null
   },
   {
@@ -1791,7 +1791,7 @@
       66
     ],
     "bonus": 2,
-    "jackpot_usd": null,
+    "jackpot_usd": 368000000,
     "powerplay": null
   },
   {
@@ -1804,7 +1804,7 @@
       40
     ],
     "bonus": 3,
-    "jackpot_usd": null,
+    "jackpot_usd": 392000000,
     "powerplay": null
   },
   {
@@ -1817,7 +1817,7 @@
       51
     ],
     "bonus": 3,
-    "jackpot_usd": null,
+    "jackpot_usd": 413000000,
     "powerplay": null
   },
   {
@@ -1830,7 +1830,7 @@
       70
     ],
     "bonus": 12,
-    "jackpot_usd": null,
+    "jackpot_usd": 430000000,
     "powerplay": null
   },
   {
@@ -1843,7 +1843,7 @@
       50
     ],
     "bonus": 12,
-    "jackpot_usd": null,
+    "jackpot_usd": 452000000,
     "powerplay": null
   },
   {
@@ -1856,7 +1856,7 @@
       66
     ],
     "bonus": 20,
-    "jackpot_usd": null,
+    "jackpot_usd": 467000000,
     "powerplay": null
   },
   {
@@ -1869,7 +1869,7 @@
       52
     ],
     "bonus": 6,
-    "jackpot_usd": null,
+    "jackpot_usd": 489000000,
     "powerplay": null
   },
   {
@@ -1882,7 +1882,7 @@
       62
     ],
     "bonus": 12,
-    "jackpot_usd": null,
+    "jackpot_usd": 511000000,
     "powerplay": null
   },
   {
@@ -1895,7 +1895,7 @@
       57
     ],
     "bonus": 16,
-    "jackpot_usd": null,
+    "jackpot_usd": 542000000,
     "powerplay": null
   },
   {
@@ -1908,7 +1908,7 @@
       63
     ],
     "bonus": 12,
-    "jackpot_usd": null,
+    "jackpot_usd": 576000000,
     "powerplay": null
   },
   {
@@ -1921,7 +1921,7 @@
       56
     ],
     "bonus": 23,
-    "jackpot_usd": null,
+    "jackpot_usd": 604000000,
     "powerplay": null
   },
   {
@@ -1934,7 +1934,7 @@
       56
     ],
     "bonus": 22,
-    "jackpot_usd": null,
+    "jackpot_usd": 637000000,
     "powerplay": null
   },
   {
@@ -1947,7 +1947,7 @@
       55
     ],
     "bonus": 14,
-    "jackpot_usd": null,
+    "jackpot_usd": 672000000,
     "powerplay": null
   }
 ]

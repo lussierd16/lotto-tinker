@@ -79,7 +79,7 @@ CURL_CMD = [
 
 def _gql_fetch(start_date, end_date):
     def _run(include_jackpot):
-        jackpot_fragment = " jackpot { jackpotAmount }" if include_jackpot else ""
+        jackpot_fragment = " estimatedJackpot" if include_jackpot else ""
         query = (
             f'{{ winningNumbersForDateRange(dateRange: {{ start: "{start_date}", end: "{end_date}" }}) {{'
             f' id drawDate gameTypeId drawNumber'
@@ -154,7 +154,7 @@ def fetch_data(game_config, existing_records=None, end_date=None):
             "date": d["drawDate"][:10],
             "numbers": sorted(wn["drawNumbers"]),
             "bonus": wn.get(bonus_field) if bonus_field else None,
-            "jackpot_usd": d.get("jackpot", {}).get("jackpotAmount") if d.get("jackpot") else None,
+            "jackpot_usd": int(d["estimatedJackpot"]) // 100 if d.get("estimatedJackpot") else None,
             "powerplay": wn.get("powerplay")
         })
 
