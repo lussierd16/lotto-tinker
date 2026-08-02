@@ -1998,5 +1998,18 @@
     "bonus": 2,
     "jackpot_usd": 0,
     "powerplay": null
+  },
+  {
+    "date": "2026-08-01",
+    "numbers": [
+      15,
+      18,
+      31,
+      32,
+      47
+    ],
+    "bonus": 1,
+    "jackpot_usd": 0,
+    "powerplay": null
   }
 ]
