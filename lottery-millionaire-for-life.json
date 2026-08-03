@@ -2011,5 +2011,18 @@
     "bonus": 1,
     "jackpot_usd": 0,
     "powerplay": null
+  },
+  {
+    "date": "2026-08-02",
+    "numbers": [
+      4,
+      28,
+      44,
+      55,
+      56
+    ],
+    "bonus": 4,
+    "jackpot_usd": 0,
+    "powerplay": null
   }
 ]
