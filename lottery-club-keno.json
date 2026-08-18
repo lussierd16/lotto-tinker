@@ -16630,5 +16630,33 @@
     "bonus": null,
     "jackpot_usd": 0,
     "powerplay": null
+  },
+  {
+    "date": "2026-08-18",
+    "numbers": [
+      1,
+      6,
+      11,
+      13,
+      29,
+      30,
+      31,
+      32,
+      38,
+      42,
+      43,
+      44,
+      45,
+      50,
+      51,
+      52,
+      57,
+      63,
+      71,
+      79
+    ],
+    "bonus": null,
+    "jackpot_usd": 0,
+    "powerplay": null
   }
 ]
