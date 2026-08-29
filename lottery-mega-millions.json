@@ -2092,5 +2092,18 @@
     "bonus": 14,
     "jackpot_usd": 130000000,
     "powerplay": null
+  },
+  {
+    "date": "2026-08-28",
+    "numbers": [
+      8,
+      17,
+      29,
+      42,
+      55
+    ],
+    "bonus": 2,
+    "jackpot_usd": 145000000,
+    "powerplay": null
   }
 ]
