@@ -2505,5 +2505,31 @@
     "bonus": 2,
     "jackpot_usd": 0,
     "powerplay": null
+  },
+  {
+    "date": "2026-09-09",
+    "numbers": [
+      2,
+      25,
+      54,
+      55,
+      57
+    ],
+    "bonus": 2,
+    "jackpot_usd": 0,
+    "powerplay": null
+  },
+  {
+    "date": "2026-09-10",
+    "numbers": [
+      7,
+      16,
+      43,
+      50,
+      58
+    ],
+    "bonus": 1,
+    "jackpot_usd": 0,
+    "powerplay": null
   }
 ]
