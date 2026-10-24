@@ -18506,5 +18506,33 @@
     "bonus": null,
     "jackpot_usd": 0,
     "powerplay": null
+  },
+  {
+    "date": "2026-10-24",
+    "numbers": [
+      15,
+      18,
+      19,
+      20,
+      24,
+      26,
+      35,
+      37,
+      38,
+      40,
+      42,
+      47,
+      52,
+      53,
+      54,
+      59,
+      65,
+      69,
+      72,
+      77
+    ],
+    "bonus": null,
+    "jackpot_usd": 0,
+    "powerplay": null
   }
 ]
