@@ -3285,5 +3285,18 @@
     "bonus": 4,
     "jackpot_usd": 0,
     "powerplay": null
+  },
+  {
+    "date": "2026-11-08",
+    "numbers": [
+      9,
+      24,
+      37,
+      47,
+      56
+    ],
+    "bonus": 5,
+    "jackpot_usd": 0,
+    "powerplay": null
   }
 ]
